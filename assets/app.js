@@ -1756,11 +1756,11 @@ function renderActionTable(area) {
   var title = actionStatusFilter==='all' ? 'All Actions' : (actionStatusFilter==='Overdue' ? 'Overdue Actions' : actionStatusFilter+' Actions');
   var filterPresets = renderFilterPresetsBar('actions');
   var viewBtns = '<div style="display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap"><button class="btn btn-sm '+(actionSubView==='table'?' btn-primary':'')+'" onclick="actionSwitchSubView(\'table\')">Table</button><button class="btn btn-sm'+(actionSubView==='kanban'?' btn-primary':'')+'" onclick="actionSwitchSubView(\'kanban\')">Kanban</button><button class="btn btn-sm'+(actionSubView==='timeline'?' btn-primary':'')+'" onclick="actionSwitchSubView(\'timeline\')">Timeline</button>'+filterPresets+'<button class="btn btn-sm" style="margin-left:auto" onclick="openQuickEntry(\'actions\')">⚡ Quick Entry</button><button class="btn btn-sm" onclick="openPasteImport(\'actions\')">⎗ Paste Import</button><button class="btn btn-sm" onclick="exportModuleCsv(\'actions\')">⬇ CSV</button></div>';
-  
+
   var quickAddHTML = '<div class="quick-add"><div class="qa-title"><input type="text" id="qaTitle" placeholder="Quick add action..." maxlength="100"></div><div class="qa-source"><input type="text" id="qaSource" placeholder="Source" value="'+esc(lastQuickSource)+'" style="width:100px"></div><div class="qa-assignee"><input type="text" id="qaAssignee" placeholder="Assignee" value="'+esc(lastQuickAssignee)+'" style="width:100px"></div><div class="qa-priority"><select id="qaPriority" style="width:100px"><option value="P4 — Low">P4 — Low</option><option value="P3 — Medium">P3 — Medium</option><option value="P2 — High" selected>P2 — High</option><option value="P1 — Critical">P1 — Critical</option></select></div><div class="qa-due"><input type="date" id="qaDue" style="width:120px"></div><button class="qa-btn" onclick="actionQuickAdd()">+ Add</button></div>';
-  
+
   var tableHTML = '<div class="table-container"><div class="table-header"><h3>'+esc(title)+' ('+filtered.length+')</h3><div class="table-filters"><input class="filter-input" type="text" id="actionSearchInput" placeholder="Search actions..." value="'+esc(actionSearchQuery)+'" aria-label="Search actions">'+(actionSearchQuery?'<button class="btn btn-sm" onclick="actionClearSearch()">✕</button>':'')+'</div></div>';
-  
+
   if(filtered.length > 0) {
     tableHTML += '<div class="table-scroll"><table class="rtable"><thead><tr><th scope="col" onclick="actionSortBy(\'id\')">ID'+arrow('id')+'</th><th scope="col" onclick="actionSortBy(\'title\')">Title'+arrow('title')+'</th><th scope="col">Type</th><th scope="col" onclick="actionSortBy(\'priority\')">Priority'+arrow('priority')+'</th><th scope="col" onclick="actionSortBy(\'assignee\')">Assignee'+arrow('assignee')+'</th><th scope="col" onclick="actionSortBy(\'category\')">Category'+arrow('category')+'</th><th scope="col" onclick="actionSortBy(\'status\')">Status'+arrow('status')+'</th><th scope="col" onclick="actionSortBy(\'due\')">Due'+arrow('due')+'</th><th scope="col" class="no-sort"></th></tr></thead><tbody>';
     var pageItems = paginateItems(filtered, 'actions');
@@ -1780,9 +1780,9 @@ function renderActionTable(area) {
     tableHTML += '<div class="empty-state"><div class="es-icon">☐</div><h3>No actions found</h3><p>'+(actionSearchQuery?'No results for "'+esc(actionSearchQuery)+'"':'Get started by adding an action using the quick-add bar above, or use <strong>Paste Import</strong> to bulk import from a spreadsheet.')+'</p>'+(actionSearchQuery?'':'<button class="btn btn-sm btn-primary" style="margin-top:8px" onclick="openPasteImport(\'actions\')">⎗ Paste Import</button>')+'</div>';
   }
   tableHTML += '</div>';
-  
+
   area.innerHTML = viewBtns + quickAddHTML + tableHTML;
-  
+
   // Wire search input
   var si = document.getElementById('actionSearchInput');
   if(si) si.addEventListener('input', function(){
@@ -1794,7 +1794,7 @@ function renderActionTable(area) {
       if(inp) inp.focus();
     }, 150);
   });
-  
+
   // Replace the root handler on render so a row opens exactly once.
   area.onclick = function(e){
     if(e.target.closest('.action-dots')) return;
@@ -2096,7 +2096,7 @@ function saveAction() {
     logActivity('actions', 'Created', actionFmtId(data.id), data.title);
     toast('Action added', 'success');
   }
-  
+
   closeModal('actionModal');
   renderContent();
 }
@@ -2167,7 +2167,7 @@ function actionShowCtx(e, id) {
   if(e) e.stopPropagation();
   var a = appState.actions.find(function(x){ return x.id === id; });
   if(!a) return;
-  
+
   var items = [
     {label:'Edit',icon:'✎',action:function(){ openEditActionModal(id); }},
     {label:'Duplicate',icon:'⎘',action:function(){ duplicateAction(id); }},
@@ -2175,7 +2175,7 @@ function actionShowCtx(e, id) {
     {label:'Mark Complete',icon:'✓',action:function(){ markActionComplete(id); }},
     {label:'Delete',icon:'✕',action:function(){ deleteAction(id); }}
   ];
-  
+
   if(e){showContextMenu(e.clientX,e.clientY,items);}else{var btn=document.querySelector('[onclick*="actionShowCtx(null,'+id+')"]');if(btn){var rect=btn.getBoundingClientRect();showContextMenu(rect.left,rect.bottom,items);}else{showContextMenu(200,200,items);}}
 }
 function markActionComplete(id) {
@@ -2193,7 +2193,7 @@ function markActionComplete(id) {
 function duplicateAction(id) {
   var a = appState.actions.find(function(x){ return x.id === id; });
   if(!a) return;
-  
+
   var dup = {
     id: _actionNextId++,
     title: a.title + ' [copy]',
@@ -2210,7 +2210,7 @@ function duplicateAction(id) {
     updated: todayStr(),
     completed: null
   };
-  
+
   appState.actions.push(dup);
   logActivity('actions', 'Duplicated', actionFmtId(dup.id), dup.title);
   toast(actionFmtId(dup.id)+' created', 'success');
@@ -2219,7 +2219,7 @@ function duplicateAction(id) {
 function deleteAction(id) {
   var a = appState.actions.find(function(x){ return x.id === id; });
   if(!a) return;
-  
+
   showConfirm('Delete Action', 'Delete "'+a.title+'"? This cannot be undone.', 'Delete', function(){
     snapshotForUndo('Delete action');
     appState.actions = appState.actions.filter(function(x){ return x.id !== id; });
@@ -2807,43 +2807,43 @@ var bomSelectedIds = new Set();
 var invSelectedIds = new Set();
 var hwSelectedIds = new Set();
 function toggleBulkSelect(moduleKey, itemId) {
-  var selSet = moduleKey === 'risks' ? riskSelectedIds : 
+  var selSet = moduleKey === 'risks' ? riskSelectedIds :
                moduleKey === 'actions' ? actionSelectedIds :
                moduleKey === 'boms' ? bomSelectedIds :
                moduleKey === 'inventory' ? invSelectedIds :
                moduleKey === 'hwItems' ? hwSelectedIds : null;
-  
+
   if (!selSet) return;
-  
+
   if (selSet.has(itemId)) {
     selSet.delete(itemId);
   } else {
     selSet.add(itemId);
   }
-  
+
   updateBulkBar();
   renderContent();
 }
 function selectAllBulk(moduleKey, checked) {
-  var selSet = moduleKey === 'risks' ? riskSelectedIds : 
+  var selSet = moduleKey === 'risks' ? riskSelectedIds :
                moduleKey === 'actions' ? actionSelectedIds :
                moduleKey === 'boms' ? bomSelectedIds :
                moduleKey === 'inventory' ? invSelectedIds :
                moduleKey === 'hwItems' ? hwSelectedIds : null;
-  
+
   if (!selSet) return;
-  
+
   var data = moduleKey === 'risks' ? appState.risks :
              moduleKey === 'actions' ? appState.actions :
              moduleKey === 'boms' ? appState.boms :
              moduleKey === 'inventory' ? appState.inventory :
              moduleKey === 'hwItems' ? appState.hwItems : [];
-  
+
   selSet.clear();
   if (checked) {
     data.forEach(function(item) { selSet.add(item.id); });
   }
-  
+
   updateBulkBar();
   renderContent();
 }
@@ -2853,7 +2853,7 @@ function updateBulkBar() {
                currentModule === 'boms' ? bomSelectedIds :
                currentModule === 'inventory' ? invSelectedIds :
                currentModule === 'hwItems' ? hwSelectedIds : null;
-  
+
   var bulkBar = document.getElementById('bulkActionBar');
   if (!bulkBar) {
     var contentArea = document.getElementById('contentArea');
@@ -2863,7 +2863,7 @@ function updateBulkBar() {
     bulkBar.style.display = 'none';
     contentArea.parentNode.insertBefore(bulkBar, contentArea.nextSibling);
   }
-  
+
   if (!selSet || selSet.size === 0) {
     bulkBar.style.display = 'none';
   } else {
@@ -2883,9 +2883,9 @@ function deleteBulkSelected() {
                currentModule === 'boms' ? bomSelectedIds :
                currentModule === 'inventory' ? invSelectedIds :
                currentModule === 'hwItems' ? hwSelectedIds : null;
-  
+
   if (!selSet || selSet.size === 0) return;
-  
+
   showConfirm('Delete Selected Items?', 'This will delete ' + selSet.size + ' items. Use Ctrl+Z to undo.', 'Delete', function() {
     snapshotForUndo('Bulk delete ' + selSet.size + ' ' + currentModule);
     var ids = Array.from(selSet);
@@ -2912,23 +2912,23 @@ function showBulkStatusChange() {
                currentModule === 'boms' ? bomSelectedIds :
                currentModule === 'inventory' ? invSelectedIds :
                currentModule === 'hwItems' ? hwSelectedIds : null;
-  
+
   if (!selSet || selSet.size === 0) return;
-  
+
   var statuses = currentModule === 'risks' ? appState.settings.dropdownLists.riskStatuses :
                  currentModule === 'actions' ? appState.settings.dropdownLists.actionStatuses :
                  currentModule === 'boms' ? appState.settings.dropdownLists.bomStatuses :
                  currentModule === 'inventory' ? appState.settings.dropdownLists.invStatuses :
                  currentModule === 'hwItems' ? appState.settings.dropdownLists.hwReviewStatuses : [];
-  
+
   var html = '<label for="bulkStatusSelect">New Status:</label><select id="bulkStatusSelect" style="padding:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);border-radius:4px"><option value="">— Select —</option>';
   statuses.forEach(function(s) { html += '<option value="' + esc(s) + '">' + esc(s) + '</option>'; });
   html += '</select>';
-  
+
   showConfirm('Change Status for ' + selSet.size + ' Items', html, 'Change Status', function() {
     var newStatus = document.getElementById('bulkStatusSelect').value;
     if (!newStatus) return;
-    
+
     var ids = Array.from(selSet);
     if (currentModule === 'risks') {
       appState.risks.forEach(function(r) { if (ids.includes(r.id)) r.status = newStatus; });
@@ -2952,18 +2952,18 @@ function exportBulkSelected() {
                currentModule === 'boms' ? bomSelectedIds :
                currentModule === 'inventory' ? invSelectedIds :
                currentModule === 'hwItems' ? hwSelectedIds : null;
-  
+
   if (!selSet || selSet.size === 0) return;
-  
+
   var ids = Array.from(selSet);
   var data = currentModule === 'risks' ? appState.risks :
              currentModule === 'actions' ? appState.actions :
              currentModule === 'boms' ? appState.boms :
              currentModule === 'inventory' ? appState.inventory :
              currentModule === 'hwItems' ? appState.hwItems : [];
-  
+
   var selected = data.filter(function(item) { return ids.includes(item.id); });
-  
+
   var csv = '';
   if (selected.length > 0) {
     var keys = Object.keys(selected[0]);
@@ -2976,7 +2976,7 @@ function exportBulkSelected() {
       }).join(',') + '\n';
     });
   }
-  
+
   var blob = new Blob([csv], {type: 'text/csv'});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
@@ -6517,13 +6517,13 @@ window.addEventListener('beforeunload', function(e) {
 /* ═══════════════════════════════════════════════
    TESTING CHECKLIST — Phase 5
    ═══════════════════════════════════════════════
-   
+
    DASHBOARD
    [ ] All stat cards show correct live counts
    [ ] Clicking each stat card navigates to correct module
    [ ] Activity feed shows entries from all modules
    [ ] Module overview chart reflects actual counts
-   
+
    GLOBAL SEARCH
    [ ] Typing in search bar shows dropdown results
    [ ] Results include items from all 6 modules
@@ -6531,12 +6531,12 @@ window.addEventListener('beforeunload', function(e) {
    [ ] Escape key closes search results
    [ ] Click outside closes search results
    [ ] Debounce works (no flicker on fast typing)
-   
+
    ASSEMBLY & SUBASSEMBLY
    [ ] Add/edit/delete assemblies works
    [ ] Add/edit/delete subassemblies works
    [ ] Rack assignment dropdown populates correctly
-   
+
    RISK REGISTER
    [ ] All CRUD operations work (add, edit, delete, duplicate)
    [ ] Criticality scoring calculates correctly (Q+C+S+R)
@@ -6548,7 +6548,7 @@ window.addEventListener('beforeunload', function(e) {
    [ ] History tracking records changes
    [ ] Report generation works (copy, new tab)
    [ ] Cross-link: linked actions shown in detail panel
-   
+
    ACTION TRACKER
    [ ] Quick-add bar creates actions correctly
    [ ] Table view: sort, filter, search all work
@@ -6556,7 +6556,7 @@ window.addEventListener('beforeunload', function(e) {
    [ ] Edit modal populates correctly
    [ ] Due date overdue highlighting works
    [ ] Cross-link: linked risk shown in detail panel
-   
+
    BOM MANAGER
    [ ] Hierarchical tree expand/collapse works
    [ ] Add/edit items at any level
@@ -6564,13 +6564,13 @@ window.addEventListener('beforeunload', function(e) {
    [ ] Shortfall detection (qtyRequired > qtyOnHand with qtyOnHand > 0)
    [ ] Category and status filters work
    [ ] Cross-link: linked inventory items shown in detail
-   
+
    INVENTORY TRACKER
    [ ] CRUD operations work
    [ ] Status/location filters work
    [ ] Part# links to BOM (clickable)
    [ ] Search works across all fields
-   
+
    SECURITY HW REVIEW
    [ ] Add/edit/delete equipment works
    [ ] Dynamic memory table (add/remove rows)
@@ -6580,7 +6580,7 @@ window.addEventListener('beforeunload', function(e) {
    [ ] HW Report Generator: select up to 4 items
    [ ] Report: Copy TSV, Download CSV, Print View all work
    [ ] Cross-link: assembly link shown in detail
-   
+
    BULK ACTIONS
    [ ] Checkbox column appears in all tables
    [ ] Select all checkbox works
@@ -6589,31 +6589,31 @@ window.addEventListener('beforeunload', function(e) {
    [ ] Change status works
    [ ] Export selected CSV downloads correctly
    [ ] Selection clears on module switch
-   
+
    CROSS-MODULE LINKS
    [ ] Risk detail → linked actions (clickable)
    [ ] Action detail → linked risk (clickable)
    [ ] BOM detail → linked inventory (clickable)
    [ ] Inventory detail → linked BOM (clickable)
    [ ] HW detail → linked assembly (clickable)
-   
+
    PRINT
    [ ] @media print hides nav, sidebar, buttons, modals
    [ ] Tables print with borders and readable text
    [ ] Page breaks don't split chart sections
-   
+
    SETTINGS
    [ ] Tool title updates header
    [ ] Module names update nav and everywhere
    [ ] Dropdown list editing works (add/remove items)
    [ ] Accent color changes propagate
-   
+
    EXPORT / IMPORT
    [ ] Export creates valid JSON with all data
    [ ] Import restores all data correctly
    [ ] Import with bad data shows error gracefully
    [ ] Drag-and-drop import works
-   
+
    CONSTRAINTS
    [ ] No external network requests (works offline)
    [ ] No localStorage/sessionStorage usage
@@ -8091,4 +8091,3 @@ function pmdInitialize(){
  document.getElementById('globalSearchInput').addEventListener('input',handleGlobalSearch);
 }
 pmdInitialize();
-
