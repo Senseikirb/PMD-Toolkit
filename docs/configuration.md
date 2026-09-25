@@ -2,7 +2,7 @@
 
 ## 1. Begin without examples
 
-Open `PMD_ToolkitV10.0.html`. **Start Blank** dismisses onboarding without creating records or requiring a program name. The standard navigation contains general planning, execution, and knowledge tools. Specialist modules are available in Settings.
+Open the hosted PMD app, or `index.html` with its adjacent assets. **Start Blank** dismisses onboarding without creating records or requiring a program name. The standard navigation contains general planning, execution, and knowledge tools. Specialist modules are available in Settings.
 
 **New Program Setup** can set an optional name, subtitle, team, initial workstreams, risk framework, and optional capabilities. Only workstream names you actually type become structure records. Team names become owner suggestions.
 
@@ -80,7 +80,7 @@ Test and requirement success summaries use the outcome mappings in Workflow & me
 
 Import first parses and validates a separate candidate state. A preview identifies the program, record count, and migration/reference warnings. Confirm replacement only after reviewing it. A failed import leaves the current program unchanged. An imported workspace can be undone during the current session.
 
-The browser receives a download request; verify that the JSON appeared in your chosen download location. No browser storage or hidden recovery copy is maintained. CSV and Markdown exports are review copies, not complete backups.
+The browser receives a download request; verify that the JSON appeared in your chosen download location. Session Mode retains no automatic copy. Trusted Device Mode, if deliberately enabled, keeps a current and previous device copy; see [data modes and security](data-and-security.md). CSV and Markdown exports are review copies, not complete backups.
 
 ## 9. Useful interactions
 

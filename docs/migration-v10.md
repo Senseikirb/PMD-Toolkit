@@ -1,5 +1,7 @@
 # Migration notes — V9.5 to V10.0
 
+These retained notes describe the original schema migration. PMD 10.1 continues schema 1 without reinterpreting V10.0 records; see [current migration notes](migration.md).
+
 ## Recommended procedure
 
 1. In V9.5, export the current program as JSON. Preserve that original export unchanged.

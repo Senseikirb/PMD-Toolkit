@@ -1,0 +1,875 @@
+{
+  "applicationVersion": "10.1.0",
+  "schemaVersion": 1,
+  "executedAt": "2026-09-25T19:07:49.677Z",
+  "environment": "Windows; installed Google Chrome driven by Playwright. Mobile/touch emulation, not physical iOS.",
+  "browserGroups": 113,
+  "suites": [
+    {
+      "file": "deep-test-results.json",
+      "executedAt": "2026-09-25T19:04:41.034Z",
+      "results": [
+        {
+          "name": "A: blank production has no records",
+          "status": "PASS",
+          "detail": {
+            "modules": 21,
+            "enabled": 10
+          }
+        },
+        {
+          "name": "A: every blank module renders",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "B: software configuration preset creates no data",
+          "status": "PASS",
+          "detail": "Software Development"
+        },
+        {
+          "name": "B: user-entered hierarchy create/edit",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "B: risk custom scale create/edit and score",
+          "status": "PASS",
+          "detail": {
+            "sum": 12,
+            "max": 4,
+            "count": 2,
+            "hasAny": true,
+            "complete": true,
+            "maxP": 25,
+            "severity": "High",
+            "className": "cs-high",
+            "model": {
+              "id": "muhby826dirdx",
+              "name": "Likelihood × Impact",
+              "formula": "product",
+              "dimensions": [
+                {
+                  "key": "likelihood",
+                  "label": "Likelihood",
+                  "min": 1,
+                  "max": 5,
+                  "labels": {}
+                },
+                {
+                  "key": "impact",
+                  "label": "Impact",
+                  "min": 1,
+                  "max": 5,
+                  "labels": {}
+                }
+              ],
+              "thresholds": {
+                "medium": 5,
+                "high": 10,
+                "critical": 20,
+                "maxHigh": null,
+                "maxCritical": null
+              },
+              "allowPartial": false
+            }
+          }
+        },
+        {
+          "name": "C/E: enable all specialist modules",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: actions",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: milestones",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: decisions",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: boms",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: inventory",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: hwItems",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: swItems",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: requirements",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: tests",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: changes",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: lessons",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: tradeStudies",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: anomalies",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: costItems",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: purchases",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "CRUD create/edit/undo/redo: evmPackages",
+          "status": "PASS",
+          "detail": 1
+        },
+        {
+          "name": "E: inline links, specifications, planning and strategy",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "E: synthetic measured inputs and dated work",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "E: all populated routes and detail views",
+          "status": "PASS",
+          "detail": [
+            "dashboard",
+            "assemblies",
+            "risks",
+            "actions",
+            "milestones",
+            "decisions",
+            "costTracker",
+            "requirements",
+            "tests",
+            "anomalies",
+            "changes",
+            "boms",
+            "inventory",
+            "procurement",
+            "hwItems",
+            "evm",
+            "tradeStudies",
+            "lessons",
+            "links",
+            "actionPlan",
+            "strategy"
+          ]
+        },
+        {
+          "name": "E: intentional relationships, legacy adapters, no text inference",
+          "status": "PASS",
+          "detail": 12
+        },
+        {
+          "name": "E: disabled modules preserve records and exclude nav/home/search",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "E: settings rename/reorder/custom lists and cancel isolation",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "E: EVM null/zero and configured ratio behavior",
+          "status": "PASS",
+          "detail": {
+            "bac": 100,
+            "pv": 50,
+            "ev": 40,
+            "ac": 20,
+            "cpi": 2,
+            "spi": 0.8,
+            "eac": 50,
+            "cv": 20,
+            "sv": -10
+          }
+        },
+        {
+          "name": "E: full backup validates and preserves data",
+          "status": "PASS",
+          "detail": {
+            "records": 23,
+            "audit": 38
+          }
+        },
+        {
+          "name": "E: malformed imports are atomic",
+          "status": "PASS",
+          "detail": 8
+        },
+        {
+          "name": "E: deletion removes references and undo restores them",
+          "status": "PASS",
+          "detail": 4
+        },
+        {
+          "name": "E: reports, audit, filters, sorting, repeated rendering",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "E: actual JSON download",
+          "status": "PASS",
+          "detail": "PMD_SYNTHETIC_TEST_PROGRAM___FICTIONAL_2026-09-25T19-04-39-381Z.json"
+        },
+        {
+          "name": "D: general project disables specialist modules",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Light theme and smaller widths",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Keyboard search and dialog Escape",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Print report rendering",
+          "status": "PASS",
+          "detail": "PDF generated using Chromium print styles."
+        },
+        {
+          "name": "No page exceptions",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "No external network requests",
+          "status": "PASS",
+          "detail": true
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "external": []
+    },
+    {
+      "file": "final-test-results.json",
+      "executedAt": "2026-09-25T19:04:47.155Z",
+      "results": [
+        {
+          "name": "Import full backup via staged replacement",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Legacy V9.5 configuration and score migration",
+          "status": "PASS",
+          "detail": {
+            "score": 10,
+            "severity": "Critical",
+            "warnings": [
+              "Legacy backup migrated. Existing risk scores retain the V9.5 methodology. Omitted collections are blank."
+            ]
+          }
+        },
+        {
+          "name": "Sparse records: all record routes and details",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Reject malformed risk scales and hierarchy cycles",
+          "status": "PASS",
+          "detail": 7
+        },
+        {
+          "name": "Custom zero-based risk scale",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Every collection delete / undo / redo",
+          "status": "PASS",
+          "detail": [
+            "risks",
+            "racks",
+            "actions",
+            "boms",
+            "inventory",
+            "hwItems",
+            "swItems",
+            "decisions",
+            "milestones",
+            "evmPackages",
+            "changes",
+            "tests",
+            "lessons",
+            "requirements",
+            "tradeStudies",
+            "anomalies",
+            "costItems",
+            "linkSections",
+            "specifications",
+            "purchases",
+            "actionPlanLanes",
+            "actionPlanCards",
+            "stakeholders"
+          ]
+        },
+        {
+          "name": "Mouse: global search navigates without changing filters",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Mouse: module filter input remains bound after breadcrumb render",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Mouse: risk detail Edit button works",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Mouse: module manager disables and renames modules",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Keyboard: focus trap and navigation arrows",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Repeat settings rendering does not duplicate saves",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Audit and RACI persist through backup",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Custom ID prefix history preserves old explicit links",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Procurement receipt through intentional links is one-time and undoable",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Configured outcome values drive verification metrics",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "New Program Setup honors optional modules and typed records only",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Actual malformed JSON file selection preserves working state",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Actual saved JSON file selection and replacement",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "Visual snapshots: fresh blank, settings, populated, mobile",
+          "status": "PASS",
+          "detail": true
+        },
+        {
+          "name": "No unhandled browser exceptions",
+          "status": "PASS",
+          "detail": true
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "external": []
+    },
+    {
+      "file": "companion-results.json",
+      "executedAt": "2026-09-25T19:05:06.179Z",
+      "results": [
+        {
+          "name": "Fresh hosted launch: blank, Session Mode, no device database",
+          "status": "PASS",
+          "ms": 11,
+          "detail": {
+            "domNodes": 352,
+            "version": "10.1.0"
+          }
+        },
+        {
+          "name": "Blank modules at all seven requested sizes",
+          "status": "PASS",
+          "ms": 774,
+          "detail": [
+            {
+              "width": 320,
+              "height": 700,
+              "companion": true,
+              "modules": 21
+            },
+            {
+              "width": 360,
+              "height": 800,
+              "companion": true,
+              "modules": 21
+            },
+            {
+              "width": 390,
+              "height": 844,
+              "companion": true,
+              "modules": 21
+            },
+            {
+              "width": 430,
+              "height": 932,
+              "companion": true,
+              "modules": 21
+            },
+            {
+              "width": 844,
+              "height": 390,
+              "companion": true,
+              "modules": 21
+            },
+            {
+              "width": 768,
+              "height": 1024,
+              "companion": false,
+              "modules": 21
+            },
+            {
+              "width": 1440,
+              "height": 1000,
+              "companion": false,
+              "modules": 21
+            }
+          ]
+        },
+        {
+          "name": "Mobile navigation, renamed modules, reorder and disabled preservation",
+          "status": "PASS",
+          "ms": 372,
+          "detail": null
+        },
+        {
+          "name": "Quick Add and edit use custom statuses and preserve deep fields",
+          "status": "PASS",
+          "ms": 579,
+          "detail": null
+        },
+        {
+          "name": "Append dated note, keyboard trap and focus return",
+          "status": "PASS",
+          "ms": 313,
+          "detail": null
+        },
+        {
+          "name": "Search finds part/vendor/nested notes and opens linked record",
+          "status": "PASS",
+          "ms": 632,
+          "detail": null
+        },
+        {
+          "name": "Minimal quick capture: risks",
+          "status": "PASS",
+          "ms": 132,
+          "detail": null
+        },
+        {
+          "name": "Minimal quick capture: decisions",
+          "status": "PASS",
+          "ms": 119,
+          "detail": null
+        },
+        {
+          "name": "Minimal quick capture: milestones",
+          "status": "PASS",
+          "ms": 112,
+          "detail": null
+        },
+        {
+          "name": "Minimal quick capture: anomalies",
+          "status": "PASS",
+          "ms": 122,
+          "detail": null
+        },
+        {
+          "name": "Minimal quick capture: procurement",
+          "status": "PASS",
+          "ms": 126,
+          "detail": null
+        },
+        {
+          "name": "Minimal quick capture: lessons",
+          "status": "PASS",
+          "ms": 118,
+          "detail": null
+        },
+        {
+          "name": "Quick capture validates required title without mutation",
+          "status": "PASS",
+          "ms": 8,
+          "detail": null
+        },
+        {
+          "name": "Mobile owner/open/overdue/status filters and sorting",
+          "status": "PASS",
+          "ms": 658,
+          "detail": null
+        },
+        {
+          "name": "Every populated module at every requested size",
+          "status": "PASS",
+          "ms": 1229,
+          "detail": {
+            "viewports": 7,
+            "moduleRenders": 147
+          }
+        },
+        {
+          "name": "All mobile record details and individual edit paths",
+          "status": "PASS",
+          "ms": 992,
+          "detail": true
+        },
+        {
+          "name": "Repeated render and modal cycles do not duplicate handlers",
+          "status": "PASS",
+          "ms": 107,
+          "detail": null
+        },
+        {
+          "name": "Undo/redo and intentional relationship deletion on companion",
+          "status": "PASS",
+          "ms": 21,
+          "detail": null
+        },
+        {
+          "name": "Mobile backup download and validated round trip",
+          "status": "PASS",
+          "ms": 584,
+          "detail": {
+            "bytes": 35991
+          }
+        },
+        {
+          "name": "Share Backup download fallback",
+          "status": "PASS",
+          "ms": 35,
+          "detail": null
+        },
+        {
+          "name": "Malformed file import leaves live program intact",
+          "status": "PASS",
+          "ms": 60,
+          "detail": null
+        },
+        {
+          "name": "Generated handler registry covers rendered workstation templates",
+          "status": "PASS",
+          "ms": 2,
+          "detail": true
+        },
+        {
+          "name": "XSS payloads are inert in render sinks and imported fields",
+          "status": "PASS",
+          "ms": 20,
+          "detail": true
+        },
+        {
+          "name": "Session Mode reload intentionally clears program",
+          "status": "PASS",
+          "ms": 164,
+          "detail": null
+        },
+        {
+          "name": "Trusted Device Mode requires explicit opt-in and commits save",
+          "status": "PASS",
+          "ms": 382,
+          "detail": null
+        },
+        {
+          "name": "Trusted Device Mode restores after reload with audit and relationships",
+          "status": "PASS",
+          "ms": 157,
+          "detail": null
+        },
+        {
+          "name": "Quota failure keeps memory and prior device save",
+          "status": "PASS",
+          "ms": 15,
+          "detail": {
+            "ok": false,
+            "before": "Confirm interface acceptance criteria",
+            "after": "Confirm interface acceptance criteria",
+            "memory": "SYNTHETIC unsaved quota change",
+            "state": "Save failed — export now"
+          }
+        },
+        {
+          "name": "Concurrent windows cannot silently overwrite device program",
+          "status": "PASS",
+          "ms": 697,
+          "detail": null
+        },
+        {
+          "name": "Corrupted current save offers previous validated recovery",
+          "status": "PASS",
+          "ms": 217,
+          "detail": null
+        },
+        {
+          "name": "Disable and clear removes both saved copies, retains session",
+          "status": "PASS",
+          "ms": 236,
+          "detail": null
+        },
+        {
+          "name": "Malformed device envelope recovers without partial import",
+          "status": "PASS",
+          "ms": 248,
+          "detail": null
+        },
+        {
+          "name": "Service worker registers at GitHub project scope and caches shell only",
+          "status": "PASS",
+          "ms": 14,
+          "detail": {
+            "scopePath": "/PMD-Toolkit/",
+            "shellEntries": 15
+          }
+        },
+        {
+          "name": "Offline shell reload succeeds and remains blank in Session Mode",
+          "status": "PASS",
+          "ms": 355,
+          "detail": null
+        },
+        {
+          "name": "Update waits for intent, backup acknowledgment, and other windows",
+          "status": "PASS",
+          "ms": 3753,
+          "detail": null
+        },
+        {
+          "name": "Root-path deployment also works with relative manifest and worker paths",
+          "status": "PASS",
+          "ms": 616,
+          "detail": null
+        },
+        {
+          "name": "5,000-record synthetic program: bounded rendering, cached search, import timing",
+          "status": "PASS",
+          "ms": 296,
+          "detail": {
+            "records": 5000,
+            "rows": 40,
+            "domNodes": 601,
+            "renderMs": 7.699999928474426,
+            "firstSearchMs": 11.800000071525574,
+            "cachedSearchMs": 1.5999999046325684,
+            "importValidationMs": 65.40000009536743,
+            "heapBytes": 20727495,
+            "matches": 1
+          }
+        },
+        {
+          "name": "Desktop large register remains paginated and efficient",
+          "status": "PASS",
+          "ms": 164,
+          "detail": {
+            "ms": 28.100000023841858,
+            "rows": 50,
+            "nodes": 877
+          }
+        },
+        {
+          "name": "Simulated 4× CPU slowdown: startup and mobile rendering",
+          "status": "PASS",
+          "ms": 240,
+          "detail": {
+            "mobile5000ProgramRenderMs": 26.199999928474426,
+            "throttle": 4
+          }
+        },
+        {
+          "name": "Light/dark screenshots, touch targets, and mobile form layout",
+          "status": "PASS",
+          "ms": 1259,
+          "detail": [
+            {
+              "height": 59,
+              "width": 76
+            },
+            {
+              "height": 59,
+              "width": 76
+            },
+            {
+              "height": 59,
+              "width": 76
+            },
+            {
+              "height": 59,
+              "width": 76
+            },
+            {
+              "height": 59,
+              "width": 76
+            },
+            {
+              "height": 44,
+              "width": 174
+            },
+            {
+              "height": 44,
+              "width": 174
+            }
+          ]
+        },
+        {
+          "name": "Print report produces a readable document",
+          "status": "PASS",
+          "ms": 450,
+          "detail": null
+        },
+        {
+          "name": "No unhandled browser exceptions or external data requests",
+          "status": "PASS",
+          "ms": 0,
+          "detail": {
+            "errors": 0,
+            "externalRequests": 0,
+            "consoleErrors": []
+          }
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "external": []
+    },
+    {
+      "file": "polish-results.json",
+      "executedAt": "2026-09-25T19:07:49.677Z",
+      "results": [
+        {
+          "name": "Measured fresh startup under 4× CPU slowdown",
+          "status": "PASS",
+          "detail": {
+            "uiReadyMs": 1124.2999999523163,
+            "programReadyMs": 1274.7999999523163,
+            "domNodes": 352,
+            "shellReadyUpperBoundMs": 1469.5999999046326
+          }
+        },
+        {
+          "name": "Partial program Home distinguishes missing inputs from measured zero",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "Legacy sortable headers retain keyboard activation under strict CSP",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "Primary-button text contrast and named mobile controls",
+          "status": "PASS",
+          "detail": {
+            "ratio": 7.5101749870062795,
+            "missing": []
+          }
+        },
+        {
+          "name": "Retained context-menu propagation and single row handler after 15 renders",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "Compressed visual viewport keeps quick-form save visible",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "Recovery save retains a validated previous device backup",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "Mobile field types are validated before import replacement",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "Full workstation Save buttons dispatch through external handlers",
+          "status": "PASS",
+          "detail": 16
+        },
+        {
+          "name": "Final screenshots reflect current source, both themes and desktop density",
+          "status": "PASS",
+          "detail": null
+        },
+        {
+          "name": "No unhandled exceptions during final polish workflows",
+          "status": "PASS",
+          "detail": null
+        }
+      ],
+      "errors": [],
+      "consoleErrors": [],
+      "external": []
+    }
+  ]
+}
