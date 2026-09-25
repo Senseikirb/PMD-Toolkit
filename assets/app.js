@@ -870,7 +870,7 @@ function addRiskNote(riskId){
 
 function openReportModal(){reportHtml=generateReportHtml();document.getElementById('reportBody').innerHTML='<div class="report-preview">'+reportHtml+'</div>';document.getElementById('copyStatus').textContent='';openModal('reportModal');}
 function copyReport(){try{var blob=new Blob([reportHtml],{type:'text/html'});var item=new ClipboardItem({'text/html':blob,'text/plain':new Blob([document.querySelector('.report-preview').innerText],{type:'text/plain'})});navigator.clipboard.write([item]).then(function(){document.getElementById('copyStatus').textContent='✔ Copied! Paste into your email client.';setTimeout(function(){var el=document.getElementById('copyStatus');if(el)el.textContent='';},4000);});}catch(e){var range=document.createRange();range.selectNodeContents(document.querySelector('.report-preview'));var sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);document.getElementById('copyStatus').textContent='Text selected — press Ctrl+C to copy.';}}
-function openReportTab(){var w=window.open('','_blank');if(w){w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Report</title></head><body style="margin:0;padding:0;background:#fff">'+reportHtml+'</body></html>');w.document.close();}else toast('Popup blocked','error');}
+function openReportTab(){var w=window.open('','_blank');if(w){w.document.write(pmdSanitizeHTML('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Report</title></head><body style="margin:0;padding:0;background:#fff">'+reportHtml+'</body></html>'));w.document.close();}else toast('Popup blocked','error');}
 /* ═══════════════════════════════════════════════
    HEADER / ACCENT UPDATES
    ═══════════════════════════════════════════════ */
@@ -1085,8 +1085,8 @@ function openAddHwModal(){
   hwEditingId=null;
   document.getElementById('hwModalTitle').textContent='New Equipment';
   document.getElementById('hwSaveBtn').textContent='Add Equipment';
-  hwTempMemory=[{size:'',unit:'GB',type:'RAM',classification:'Unclassified'}];
-  renderHwModalBody({equipType:'',vendor:'',model:'',serialNumber:'',tagNumber:'',nodeName:'',os:'',biosVersion:'',biosCompliant:'No',memory:[],isMobile:'No',mobileLocation:'',mobileSendDate:'',mobileExpReturn:'',mobileActReturn:'',mobileRecertDate:'',archivedHD:'No',building:'',floor:'',colRoom:'',office:'',classification:'Unclassified',accountability:'',uid:'',ca:'',sanitization:'',docLov:false,docSanProc:false,docHwReport:false,hwReportAction:'',hwReportDest:'',assemblyId:null,notes:'',status:'Pending Review'});
+  hwTempMemory=[{size:'',unit:'GB',type:'RAM',classification:''}];
+  renderHwModalBody({equipType:'',vendor:'',model:'',serialNumber:'',tagNumber:'',nodeName:'',os:'',biosVersion:'',biosCompliant:'No',memory:[],isMobile:'No',mobileLocation:'',mobileSendDate:'',mobileExpReturn:'',mobileActReturn:'',mobileRecertDate:'',archivedHD:'No',building:'',floor:'',colRoom:'',office:'',classification:'',accountability:'',uid:'',ca:'',sanitization:'',docLov:false,docSanProc:false,docHwReport:false,hwReportAction:'',hwReportDest:'',assemblyId:null,notes:'',status:'Pending Review'});
   openModal('hwModal');
 }
 function openEditHwModal(id){
@@ -1095,7 +1095,7 @@ function openEditHwModal(id){
   document.getElementById('hwModalTitle').textContent='Edit '+hwFmtId(id);
   document.getElementById('hwSaveBtn').textContent='Save Changes';
   hwTempMemory=JSON.parse(JSON.stringify(h.memory||[]));
-  if(hwTempMemory.length===0) hwTempMemory=[{size:'',unit:'GB',type:'RAM',classification:'Unclassified'}];
+  if(hwTempMemory.length===0) hwTempMemory=[{size:'',unit:'GB',type:'RAM',classification:''}];
   renderHwModalBody(h);
   openModal('hwModal');
 }
@@ -1180,7 +1180,7 @@ function hwToggleReportAction(){
   document.getElementById('hwReportActionFields').style.display=checked?'block':'none';
 }
 function hwAddMemRow(){
-  hwTempMemory.push({size:'',unit:'GB',type:'RAM',classification:'Unclassified'});
+  hwTempMemory.push({size:'',unit:'GB',type:'RAM',classification:''});
   hwSyncMemFromDOM();
   var h=hwReadFormData();
   renderHwModalBody(h);
@@ -1188,7 +1188,7 @@ function hwAddMemRow(){
 function hwRemoveMemRow(idx){
   hwSyncMemFromDOM();
   hwTempMemory.splice(idx,1);
-  if(hwTempMemory.length===0) hwTempMemory=[{size:'',unit:'GB',type:'RAM',classification:'Unclassified'}];
+  if(hwTempMemory.length===0) hwTempMemory=[{size:'',unit:'GB',type:'RAM',classification:''}];
   var h=hwReadFormData();
   renderHwModalBody(h);
 }
@@ -1229,7 +1229,7 @@ function hwReadFormData(){
     floor:(document.getElementById('hwFloor')||{}).value||'',
     colRoom:(document.getElementById('hwColRoom')||{}).value||'',
     office:(document.getElementById('hwOffice')||{}).value||'',
-    classification:(document.getElementById('hwClassification')||{}).value||'Unclassified',
+    classification:(document.getElementById('hwClassification')||{}).value||'',
     accountability:(document.getElementById('hwAccountability')||{}).value||'',
     uid:(document.getElementById('hwUID')||{}).value||'',
     ca:(document.getElementById('hwCA')||{}).value||'',
@@ -1304,7 +1304,7 @@ function v95_openHwDetail(id){
   // Memory
   if(h.memory&&h.memory.length>0){
     html+='<div class="detail-section"><h4>Memory</h4>';
-    h.memory.forEach(function(m){html+='<div class="detail-field"><span class="field-label">'+esc(m.type||'—')+'</span><span class="field-value">'+(m.size||'—')+' '+(m.unit||'')+(m.classification&&m.classification!=='Unclassified'?' — <span class="badge-pill '+hwGetClassClass(m.classification)+'">'+esc(m.classification)+'</span>':'')+'</span></div>';});
+    h.memory.forEach(function(m){html+='<div class="detail-field"><span class="field-label">'+esc(m.type||'—')+'</span><span class="field-value">'+esc(m.size||'—')+' '+esc(m.unit||'')+(m.classification&&m.classification!=='Unclassified'?' — <span class="badge-pill '+hwGetClassClass(m.classification)+'">'+esc(m.classification)+'</span>':'')+'</span></div>';});
     html+='</div>';
   }
   // Documents
@@ -1552,7 +1552,7 @@ function hwReportOpenTab(){
   if(!hwReportHtml){toast('Generate report first','error');return;}
   var printHtml='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Hardware Report — '+todayStr()+'</title><style>body{font-family:Arial,sans-serif;padding:20px;margin:0;color:#1a1a1a}table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:6px 8px;text-align:left;vertical-align:top;font-size:11px}th{background:#f5f0d0;font-weight:bold}.row-label{background:#f5f0d0;font-weight:bold;width:180px;font-size:11px}h2{text-align:center;margin-bottom:4px;font-size:16px}.report-meta{display:flex;justify-content:space-between;font-size:12px;font-weight:bold;margin-top:8px}.hw-report-header{text-align:center;margin-bottom:16px}.hw-report-header p{font-size:10px;color:#555;margin:4px 0 8px;line-height:1.4}.hw-report-action{margin-top:12px;border:1px solid #999;padding:8px}.hw-report-action h4{text-align:center;font-size:13px;font-weight:bold;margin-bottom:8px;text-decoration:underline}.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:11px}.action-item{margin-bottom:6px}.sig-line{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px}.sig-label{font-weight:bold;min-width:120px}.sig-blank{flex:1;border-bottom:1px solid #000;min-height:20px}.sig-date{font-weight:bold;margin-left:20px}.sig-date-blank{width:120px;border-bottom:1px solid #000;min-height:20px}.hw-report-sigs{margin-top:16px}@media print{body{padding:10px}}</style></head><body>'+hwReportHtml.replace(/<div style="background:#fff;color:#1a1a1a;padding:20px;border-radius:var\(--radius\);overflow-x:auto" id="hwReportContent">/,'<div>')+'</body></html>';
   var win=window.open('','_blank');
-  if(win){win.document.write(printHtml);win.document.close();}
+  if(win){win.document.write(pmdSanitizeHTML(printHtml));win.document.close();}
   else{toast('Pop-up blocked — allow pop-ups for this page','error');}
 }
 /* ═══════════════════════════════════════════════
@@ -1562,7 +1562,7 @@ function openAddSwModal(){
   swEditingId=null;
   document.getElementById('swModalTitle').textContent='New Software';
   document.getElementById('swSaveBtn').textContent='Add Software';
-  renderSwModalBody({swName:'',version:'',vendor:'',licenseType:'',licenseKey:'',classification:'Unclassified',installLocation:'',system:'',assemblyId:null,approvalAuth:'',approvalDate:'',expirationDate:'',stigCompliance:'No',scapScanned:'No',status:'Pending Review',notes:''});
+  renderSwModalBody({swName:'',version:'',vendor:'',licenseType:'',licenseKey:'',classification:'',installLocation:'',system:'',assemblyId:null,approvalAuth:'',approvalDate:'',expirationDate:'',stigCompliance:'No',scapScanned:'No',status:'Pending Review',notes:''});
   openModal('swModal');
 }
 function openEditSwModal(id){
@@ -1795,12 +1795,12 @@ function renderActionTable(area) {
     }, 150);
   });
   
-  // Wire table row clicks
-  area.addEventListener('click', function(e){
+  // Replace the root handler on render so a row opens exactly once.
+  area.onclick = function(e){
     if(e.target.closest('.action-dots')) return;
     var tr = e.target.closest('.rtable tbody tr');
     if(tr && tr.dataset.actionId) openActionDetail(parseInt(tr.dataset.actionId));
-  });
+  };
 }
 function actionQuickAdd() {
   var title = document.getElementById('qaTitle').value.trim();
@@ -6626,13 +6626,12 @@ window.addEventListener('beforeunload', function(e) {
    LINKS MODULE
    ═══════════════════════════════════════════════ */
 function sanitizeLinkUrl(url){
-  if(!url) return '#';
-  var s = String(url).trim();
-  if(/^javascript:/i.test(s) || /^data:/i.test(s) || /^vbscript:/i.test(s) || /^file:/i.test(s)) return '#';
-  if(!/^[a-z][a-z0-9+\-.]*:/i.test(s) && !/^\/\//.test(s) && !/^#/.test(s) && !/^\//.test(s)) {
-    s = 'https://' + s;
-  }
-  return s;
+  if(!url)return '#';
+  var s=String(url).trim();
+  if(/[\u0000-\u0020\u007f]/.test(s))return '#';
+  if(s.startsWith('#'))return s;
+  if(!/^[a-z][a-z0-9+.-]*:/i.test(s)&&!s.startsWith('/'))s='https://'+s;
+  try{var parsed=new URL(s,location.href);return ['http:','https:','mailto:','tel:'].includes(parsed.protocol)?parsed.href:'#';}catch(e){return '#';}
 }
 function renderLinksModule(area){
   var sections = appState.linkSections || [];
@@ -7740,9 +7739,9 @@ var PMD_EXTRA_LISTS={"decisionCategories":["Technical","Schedule","Cost","Scope"
  PMD 10.0 — Programless engine/configuration boundary.
  The V9.5 module implementations above remain the specialist editors. This section
  owns program context, navigation, scoring, relationships, and the backup schema.
- No persistent browser storage. No network calls. Configuration presets add no data.
+ Session data model. Optional device persistence and shell fetching are isolated in device.js / pwa.js. Configuration presets add no data.
  ============================================================================ */
-var PMD_VERSION='10.0.0',PMD_SCHEMA='pmd.program-backup',PMD_SCHEMA_VERSION=1;
+var PMD_VERSION='10.1.0',PMD_SCHEMA='pmd.program-backup',PMD_SCHEMA_VERSION=1;
 var PMD_LEGACY_FACTORS=JSON.parse(JSON.stringify(FACTORS));
 var PMD_ORIGINAL=JSON.parse(JSON.stringify(appState));
 var PMD_MODULES=[
@@ -7807,7 +7806,7 @@ function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMont
 function fmtDate(value){if(!value)return '—';var iso=String(value).slice(0,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(iso))return esc(value);var p=iso.split('-');var format=appState.settings.dateFormat;return format==='mdy'?p[1]+'/'+p[2]+'/'+p[0]:format==='dmy'?p[2]+'/'+p[1]+'/'+p[0]:iso;}
 function fmtDateLong(d){return fmtDate(d);}function fmtDateShort(d){return fmtDate(d);}
 function fmtCurrency(n){if(!pmdHasNumber(n))return '—';var cur=appState.settings.currency;return (cur?cur+' ':'')+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
-function updateHeader(){document.getElementById('headerTitle').textContent=appState.settings.programName||'PMD Toolkit';document.getElementById('headerSubtitle').textContent=appState.settings.subtitle||(appState.settings.setupComplete?'Program execution workspace':'No program configured');document.getElementById('logoIcon').textContent='P';document.title=(appState.settings.programName?appState.settings.programName+' · ':'')+'PMD 10.0';}
+function updateHeader(){document.getElementById('headerTitle').textContent=appState.settings.programName||'PMD Toolkit';document.getElementById('headerSubtitle').textContent=appState.settings.subtitle||(appState.settings.setupComplete?'Program execution workspace':'No program configured');document.getElementById('logoIcon').textContent='P';document.title=(appState.settings.programName?appState.settings.programName+' · ':'')+'PMD 10.1';}
 function toggleTheme(){snapshotForUndo('Change theme');v95_toggleTheme();appState.settings.theme=currentTheme;markUnsaved();}
 function buildNav(){var c=document.getElementById('navItems');c.innerHTML='';var last='';PMD_MODULES.slice().sort(function(a,b){return appState.settings.modules[a.key].order-appState.settings.modules[b.key].order;}).forEach(function(m){if(!pmdEnabled(m.key))return;var cfg=appState.settings.modules[m.key];if(cfg.group!==last){var g=document.createElement('div');g.className='pmd-nav-group';g.textContent=cfg.group;g.setAttribute('role','presentation');c.appendChild(g);last=cfg.group;}var b=document.createElement('button');b.className='nav-item'+(currentModule===m.key?' active':'');b.setAttribute('role','tab');b.setAttribute('aria-selected',String(currentModule===m.key));b.dataset.module=m.key;b.textContent=pmdName(m.key);b.onclick=function(){switchModule(m.key);};c.appendChild(b);});['riskSidebarFilters','actionSidebarFilters','bomSidebarFilters','invSidebarFilters','hwSidebarFilters'].forEach(function(id){document.getElementById(id).innerHTML='';});}
 function switchModule(key){var m=pmdModule(key);if(!m||!pmdEnabled(key)){toast('This module is disabled. Enable it in Settings → Modules.','info');return;}currentModule=m.key;closeDetailPanel();clearBulkSelection();buildNav();renderContent();var area=document.getElementById('contentArea');area.classList.remove('fading');area.scrollTop=0;announce(pmdName(key));}
@@ -7826,7 +7825,7 @@ function renderContent(){
  if(currentModule==='actionPlan')has=has||appState.actionPlanLanes.length;
  if(currentModule!=='dashboard'&&m&&m.array&&!has)a.innerHTML=pmdHeading(currentModule)+pmdEmpty(currentModule);
  if(currentModule!=='dashboard'&&!a.querySelector('.pmd-module-heading'))a.insertAdjacentHTML('afterbegin',pmdHeading(currentModule,'<button class="btn btn-sm" onclick="pmdOpenRelationshipIndex()">Relationships</button>'));
- pmdAdaptTerminology(a);pmdLabelControls(a);a.querySelectorAll('th[onclick]').forEach(function(th){th.tabIndex=0;th.setAttribute('role','button');th.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();th.click();}};});buildNav();if(focusId&&focused?.closest('#contentArea')){var replacement=document.getElementById(focusId);if(replacement){replacement.focus();if(selection!==null&&replacement.setSelectionRange)try{replacement.setSelectionRange(selection,selection);}catch(e){}}}
+ pmdAdaptTerminology(a);pmdLabelControls(a);a.querySelectorAll('th[onclick],th[data-pmd-event-click]').forEach(function(th){th.tabIndex=0;th.setAttribute('role','button');th.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();th.click();}};});buildNav();if(focusId&&focused?.closest('#contentArea')){var replacement=document.getElementById(focusId);if(replacement){replacement.focus();if(selection!==null&&replacement.setSelectionRange)try{replacement.setSelectionRange(selection,selection);}catch(e){}}}
 }
 function pmdAdaptTerminology(root){var terms=appState.settings.terminology;var walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);var n;while(n=walk.nextNode()){if(['SCRIPT','STYLE','TEXTAREA','OPTION'].includes(n.parentElement.tagName))continue;n.nodeValue=n.nodeValue.replace(/Subassemblies/g,terms.child+'s').replace(/Subassembly/g,terms.child).replace(/Assemblies/g,terms.structure).replace(/Assembly/g,terms.node).replace(/Racks/g,terms.structure).replace(/Rack/g,terms.node);}}
 function pmdLabelControls(root){root.querySelectorAll('input,select,textarea').forEach(function(el,i){if(el.hasAttribute('aria-label')||el.hasAttribute('aria-labelledby'))return;var lab=el.id&&root.querySelector('label[for="'+el.id+'"]');if(!lab)lab=el.closest('.form-group')?.querySelector('label');if(lab)el.setAttribute('aria-label',lab.textContent.trim());else if(el.placeholder)el.setAttribute('aria-label',el.placeholder);else el.setAttribute('aria-label',el.id||'Field '+(i+1));});}
@@ -7850,7 +7849,7 @@ function pmdSettingsBody(){var s=pmdDraft;
  if(pmdSettingsPage==='risk')return pmdRiskSettingsBody();
  if(pmdSettingsPage==='rules')return '<h3>Workflow meanings</h3><p>These mappings drive Home, notifications, and relationship blockers. Use your exact status names, separated by commas. No aggregate program health grade is inferred.</p>'+Object.keys(s.statusRules).map(function(k){return '<div class="pmd-card"><strong>'+esc(s.moduleNames[k]||k)+'</strong><div class="pmd-form-grid">'+pmdInput('closed_'+k,'Complete / inactive statuses',s.statusRules[k].closed.join(', '))+pmdInput('blocked_'+k,'Blocked / needs-attention statuses',s.statusRules[k].blocked.join(', '))+(s.statusRules[k].success?pmdInput('success_'+k,'Successful outcome values',s.statusRules[k].success.join(', '))+pmdInput('failure_'+k,'Unsuccessful / partial outcome values',s.statusRules[k].failure.join(', ')):'')+'</div></div>';}).join('')+'<h3 style="margin-top:20px">Metric thresholds</h3>'+pmdInput('ptUpcoming','Upcoming window (days)',s.thresholds.upcomingDays,'number')+pmdInput('ptWarn','EVM warning below ratio (optional)',s.thresholds.evmWarning,'number')+pmdInput('ptCritical','EVM critical below ratio (optional)',s.thresholds.evmCritical,'number')+pmdInput('ptCost','Cost variance attention above % (optional)',s.thresholds.costVariancePercent,'number');
  if(pmdSettingsPage==='display')return '<h3>Formatting and identifiers</h3><div class="pmd-form-grid">'+pmdInput('pcCurrency','Currency code / symbol (blank = unspecified)',s.currency)+pmdSelect('pcDate','Date display',['iso','mdy','dmy'],s.dateFormat)+pmdInput('pcUnits','Default units',s.defaultUnits)+pmdInput('pcReport','Report heading',s.reportHeading)+'</div><h3>Dashboard sections</h3>'+Object.keys(s.dashboard).map(function(k){return '<label style="display:block;padding:7px"><input type="checkbox" data-widget="'+k+'" '+(s.dashboard[k]?'checked':'')+'> '+esc(k)+'</label>';}).join('')+'<h3 style="margin-top:16px">Identifier prefixes</h3><p>Prefixes are display labels; stable numeric IDs and existing references are retained.</p><div class="pmd-form-grid">'+Object.keys(s.prefixes).map(function(k){return pmdInput('prefix_'+k,pmdModule(k)?.name||k,s.prefixes[k]);}).join('')+'</div>';
- return '<h3>PMD 10.0 · Offline program toolkit</h3><p>Work lives in this browser tab only. Export a Program Backup to retain records, configuration, relationships, counters, audit history, and saved filters. Opening the HTML always starts blank.</p><div class="pmd-note">Start Blank configures nothing. Presets configure modules and terminology only. Import is validated before replacement and can be undone in this session.</div><div class="pmd-actions"><button class="btn" onclick="exportAllData()">Program Backup</button><button class="btn" onclick="triggerImport()">Import backup</button><button class="btn" onclick="openAuditTrailViewer()">Audit trail</button><button class="btn" onclick="runDataIntegrityCheck()">Data integrity</button><button class="btn" onclick="pmdOpenRelationshipIndex()">Relationships</button><button class="btn" onclick="pmdProgramReport()">Program report</button><button class="btn" onclick="openCalendarView()">Calendar</button><button class="btn" onclick="openByOwnerView()">Owner view</button><button class="btn" onclick="openRaciMatrix()">RACI</button><button class="btn" onclick="openCascadeAnalysis()">Cascade analysis</button><button class="btn" onclick="openTPMDashboard()">Metrics</button><button class="btn" onclick="openKbOverlay()">Keyboard shortcuts</button></div><p>Disabled modules are retained in backups and relationship inspection, but excluded from Home and search.</p><button class="btn btn-danger" onclick="pmdResetProgram()">New blank program…</button>';
+ return '<h3>PMD 10.1 · Offline program toolkit</h3><p>Session Mode keeps work in memory. Trusted Device Mode is an explicit opt-in on this browser. Export a Program Backup to retain records, configuration, relationships, counters, audit history, and saved filters. A fresh installation always starts blank.</p><div class="pmd-note">Start Blank configures nothing. Presets configure modules and terminology only. Import is validated before replacement and can be undone in this session.</div><div class="pmd-actions"><button class="btn" onclick="exportAllData()">Program Backup</button><button class="btn" onclick="triggerImport()">Import backup</button><button class="btn" onclick="openAuditTrailViewer()">Audit trail</button><button class="btn" onclick="runDataIntegrityCheck()">Data integrity</button><button class="btn" onclick="pmdOpenRelationshipIndex()">Relationships</button><button class="btn" onclick="pmdProgramReport()">Program report</button><button class="btn" onclick="openCalendarView()">Calendar</button><button class="btn" onclick="openByOwnerView()">Owner view</button><button class="btn" onclick="openRaciMatrix()">RACI</button><button class="btn" onclick="openCascadeAnalysis()">Cascade analysis</button><button class="btn" onclick="openTPMDashboard()">Metrics</button><button class="btn" onclick="openKbOverlay()">Keyboard shortcuts</button></div><p>Disabled modules are retained in backups and relationship inspection, but excluded from Home and search.</p><button class="btn btn-danger" onclick="pmdResetProgram()">New blank program…</button>';
 }
 function pmdReadSettings(){if(!pmdDraft)return;var s=pmdDraft;
  if(pmdSettingsPage==='program'){s.programName=pmdValue('pcName');s.subtitle=pmdValue('pcSubtitle');s.programType=pmdValue('pcType');s.preparerName=pmdValue('pcPreparer');s.terminology={structure:pmdValue('pcStructure')||'Structure',node:pmdValue('pcNode')||'Item',child:pmdValue('pcChild')||'Child item'};s.team=pmdCsvList(pmdValue('pcTeam'));}
@@ -7931,7 +7930,7 @@ function pmdAttention(){var out=[],today=todayStr();PMD_MODULES.forEach(function
 function pmdUpcoming(){var today=todayStr(),end=new Date(today+'T12:00:00');end.setDate(end.getDate()+appState.settings.thresholds.upcomingDays);var limit=end.toISOString().slice(0,10),out=[];['actions','milestones','procurement','tests','risks','changes'].forEach(function(k){if(!pmdEnabled(k))return;pmdRecords(k).forEach(function(r){var date=r.due||r.dueDate||r.date||r.targetDate||r.eta||r.dateNeeded||r.scheduledDate;if(date&&date>=today&&date<=limit&&!pmdClosed(k,r))out.push({module:k,id:r.id,title:pmdTitle(r),reason:fmtDate(date),date:date});});});return out.sort(function(a,b){return a.date.localeCompare(b.date);});}
 function pmdHomeRows(items,empty){return items.length?items.slice(0,10).map(function(x){return '<div class="pmd-row"><span><button class="btn btn-sm" onclick="navigateToItem(\''+x.module+'\','+x.id+')">'+esc(x.title)+'</button><div class="pmd-muted">'+esc(pmdName(x.module))+' · '+esc(x.reason)+'</div></span></div>';}).join('')+(items.length>10?'<p class="pmd-muted">'+(items.length-10)+' more items in the corresponding modules.</p>':''):'<p class="pmd-muted">'+esc(empty)+'</p>';}
 function renderDashboard(area){var total=Object.keys(PMD_COUNTERS).reduce(function(n,k){return n+(appState[k]||[]).length;},0),s=appState.settings;var html='';
- if(!total&&!s.setupComplete)html='<section class="pmd-hero"><div class="pmd-eyebrow">PMD 10.0 / Your program starts here</div><h1>A blank workspace.<br>Built around your program.</h1><p>Plan work, manage risks, connect engineering decisions, and track execution. Start with the essentials and enable specialist tools when you need them.</p><div class="pmd-actions"><button class="btn btn-primary" onclick="pmdStartBlank()">Start Blank</button><button class="btn" onclick="pmdOpenSetup()">New Program Setup</button><button class="btn" onclick="triggerImport()">Import Program Backup</button></div><p class="pmd-muted">Offline · One file · No account · Explicit backups</p></section>';
+ if(!total&&!s.setupComplete)html='<section class="pmd-hero"><div class="pmd-eyebrow">PMD 10.1 / Your program starts here</div><h1>A blank workspace.<br>Built around your program.</h1><p>Plan work, manage risks, connect engineering decisions, and track execution. Start with the essentials and enable specialist tools when you need them.</p><div class="pmd-actions"><button class="btn btn-primary" onclick="pmdStartBlank()">Start Blank</button><button class="btn" onclick="pmdOpenSetup()">New Program Setup</button><button class="btn" onclick="triggerImport()">Import Program Backup</button></div><p class="pmd-muted">Offline capable · No account · Explicit backups</p></section>';
  else html='<section class="pmd-hero"><div class="pmd-eyebrow">Program overview</div><h1>'+esc(s.programName||'Your workspace')+'</h1><p>'+esc(s.subtitle||(!total?'Ready for your first item. Configure only what you need.':'Attention, upcoming work, and connected decisions.'))+'</p><div class="pmd-actions"><button class="btn btn-primary" onclick="switchModule(\'actions\')">Open actions</button><button class="btn" onclick="openSettings(\'modules\')">Manage modules</button><button class="btn" onclick="pmdProgramReport()">Program report</button></div></section>';
  var attention=pmdAttention(),upcoming=pmdUpcoming();html+='<div class="pmd-grid">';
  if(s.dashboard.attention)html+='<section class="pmd-card"><h2>What needs attention?</h2>'+pmdHomeRows(attention,total?'No matching attention items in enabled modules.':'No data yet. Add actions, risks, or decisions to surface attention items.')+'</section>';
@@ -7983,7 +7982,7 @@ function buildLinkGraph(key,id){var graph={risks:[],actions:[],boms:[],inventory
 function countGraphLinks(g){return Object.values(g).reduce(function(n,a){return n+a.length;},0);}
 function renderLinkGraphHTML(g){return Object.keys(g).map(function(k){return g[k].map(function(r){return '<div class="pmd-row"><button class="btn btn-sm" onclick="navigateToItem(\''+k+'\','+r.id+')">'+esc(r.title)+'</button><span>'+esc(r.rel)+'</span></div>';}).join('');}).join('')||'<p class="pmd-muted">No intentional relationships.</p>';}
 function pmdAttachRelated(key,id){pmdDetailContext={module:key,id:id};var panel=document.getElementById('detailPanelBody')||document.querySelector('#detailPanel .detail-body');if(panel&&!panel.querySelector('.pmd-rel'))panel.insertAdjacentHTML('beforeend',pmdRelatedHTML(key,id));}
-function openActionDetail(id){v95_openActionDetail(id);pmdAttachRelated('actions',id);}function openBomDetail(id){v95_openBomDetail(id);pmdAttachRelated('boms',id);}function openInvDetail(id){v95_openInvDetail(id);pmdAttachRelated('inventory',id);}function openHwDetail(id){v95_openHwDetail(id);pmdAttachRelated('hwItems',id);}function openSwDetail(id){v95_openSwDetail(id);pmdAttachRelated('swItems',id);}function openDecisionDetail(id){v95_openDecisionDetail(id);pmdAttachRelated('decisions',id);}function openMilestoneDetail(id){v95_openMilestoneDetail(id);pmdAttachRelated('milestones',id);}function openChangeDetail(id){v95_openChangeDetail(id);pmdAttachRelated('changes',id);}function openTestDetail(id){v95_openTestDetail(id);pmdAttachRelated('tests',id);}function openLessonDetail(id){v95_openLessonDetail(id);pmdAttachRelated('lessons',id);}function openReqDetail(id){v95_openReqDetail(id);pmdAttachRelated('requirements',id);}function openTradeDetail(id){v95_openTradeDetail(id);pmdAttachRelated('tradeStudies',id);}function openAnomDetail(id){v95_openAnomDetail(id);pmdAttachRelated('anomalies',id);}function openCostDetail(id){var r=appState.costItems.find(function(x){return x.id===id;});if(!r)return;openDetailPanel(pmdId('costItems',id),'<'+'h3>'+esc(r.title)+'</h3>'+pmdDetailFields(r,['wbsCode','category','owner','period','notes'])+['budget','actual','committed','etc'].map(function(k){return '<div class="detail-field"><span class="detail-label">'+esc(k)+'</span><span>'+fmtCurrency(r[k])+'</span></div>';}).join('')+'<p>Remaining budget: '+fmtCurrency(pmdCostVariance([r],false))+'<br>Forecast variance: '+fmtCurrency(pmdCostVariance([r],true))+'</p>'+pmdRelatedHTML('costItems',id)+renderAuditHistoryHTML('costTracker',id),function(){openCostModal(id);});}function openPurchaseDetail(id){var r=appState.purchases.find(function(x){return x.id===id;});if(!r)return;openDetailPanel(pmdId('purchases',id),'<h3>'+esc(r.itemName)+'</h3>'+pmdDetailFields(r,['vendor','partNumber','category','status','qty','requester','poNumber','dateNeeded','dateOrdered','eta','dateReceived','trackingNumber','notes'])+'<p>Unit cost: '+fmtCurrency(r.unitCost)+'<br>Total: '+fmtCurrency(pmdMultiply(r.qty,r.unitCost))+'</p><button class="btn" onclick="offerProcurementClosure(appState.purchases.find(function(x){return x.id==='+id+';}))">Apply receipt to linked records…</button>'+pmdRelatedHTML('purchases',id),function(){openPurchaseModal(id);});}
+function openActionDetail(id){v95_openActionDetail(id);pmdAttachRelated('actions',id);}function openBomDetail(id){v95_openBomDetail(id);pmdAttachRelated('boms',id);}function openInvDetail(id){v95_openInvDetail(id);pmdAttachRelated('inventory',id);}function openHwDetail(id){v95_openHwDetail(id);pmdAttachRelated('hwItems',id);}function openSwDetail(id){v95_openSwDetail(id);document.getElementById('detailPanel').classList.add('open');pmdAttachRelated('swItems',id);}function openDecisionDetail(id){v95_openDecisionDetail(id);pmdAttachRelated('decisions',id);}function openMilestoneDetail(id){v95_openMilestoneDetail(id);pmdAttachRelated('milestones',id);}function openChangeDetail(id){v95_openChangeDetail(id);pmdAttachRelated('changes',id);}function openTestDetail(id){v95_openTestDetail(id);pmdAttachRelated('tests',id);}function openLessonDetail(id){v95_openLessonDetail(id);pmdAttachRelated('lessons',id);}function openReqDetail(id){v95_openReqDetail(id);pmdAttachRelated('requirements',id);}function openTradeDetail(id){v95_openTradeDetail(id);pmdAttachRelated('tradeStudies',id);}function openAnomDetail(id){v95_openAnomDetail(id);pmdAttachRelated('anomalies',id);}function openCostDetail(id){var r=appState.costItems.find(function(x){return x.id===id;});if(!r)return;openDetailPanel(pmdId('costItems',id),'<'+'h3>'+esc(r.title)+'</h3>'+pmdDetailFields(r,['wbsCode','category','owner','period','notes'])+['budget','actual','committed','etc'].map(function(k){return '<div class="detail-field"><span class="detail-label">'+esc(k)+'</span><span>'+fmtCurrency(r[k])+'</span></div>';}).join('')+'<p>Remaining budget: '+fmtCurrency(pmdCostVariance([r],false))+'<br>Forecast variance: '+fmtCurrency(pmdCostVariance([r],true))+'</p>'+pmdRelatedHTML('costItems',id)+renderAuditHistoryHTML('costTracker',id),function(){openCostModal(id);});}function openPurchaseDetail(id){var r=appState.purchases.find(function(x){return x.id===id;});if(!r)return;openDetailPanel(pmdId('purchases',id),'<h3>'+esc(r.itemName)+'</h3>'+pmdDetailFields(r,['vendor','partNumber','category','status','qty','requester','poNumber','dateNeeded','dateOrdered','eta','dateReceived','trackingNumber','notes'])+'<p>Unit cost: '+fmtCurrency(r.unitCost)+'<br>Total: '+fmtCurrency(pmdMultiply(r.qty,r.unitCost))+'</p><button class="btn" onclick="offerProcurementClosure(appState.purchases.find(function(x){return x.id==='+id+';}))">Apply receipt to linked records…</button>'+pmdRelatedHTML('purchases',id),function(){openPurchaseModal(id);});}
 function pmdDelete(arr,id){arr=pmdArray(arr);var r=pmdFind({module:arr,id:id});if(!r)return;var edges=pmdRelated(arr,id);showConfirm('Delete '+pmdId(arr,id),'Delete <strong>'+esc(pmdTitle(r))+'</strong>? '+edges.length+' reference(s) will be removed. Child structure/BOM records will remain with no parent. Undo restores the record and its relationships.','Delete',function(){snapshotForUndo('Delete '+pmdId(arr,id));edges.forEach(pmdRemoveEdge);appState[arr]=appState[arr].filter(function(x){return x.id!==id;});if(arr==='racks')appState.subs=appState.subs.filter(function(s){return s.id!==r._legacySubId;});auditRecord(pmdModule(arr)?.key||arr,id,'deleted',[],pmdTitle(r));logActivity(pmdModule(arr)?.key||arr,'Deleted',id,pmdTitle(r));closeDetailPanel();closeModal('pmdDialog');renderContent();});}
 function deleteRack(id){pmdDelete('racks',id);}function deleteDecision(id){pmdDelete('decisions',id);}function deleteMilestone(id){pmdDelete('milestones',id);}function deleteEvmPackage(id){pmdDelete('evmPackages',id);}function deleteChange(id){pmdDelete('changes',id);}function deleteTest(id){pmdDelete('tests',id);}function deleteLesson(id){pmdDelete('lessons',id);}function deleteReq(id){pmdDelete('requirements',id);}function deleteTrade(id){pmdDelete('tradeStudies',id);}function deleteAnom(id){pmdDelete('anomalies',id);}function deleteCost(id){pmdDelete('costItems',id);}function deletePurchase(id){pmdDelete('purchases',id);}
 function runFkIntegritySweep(){var out=[];pmdAllRelationships().forEach(function(e){if(!pmdFind(e.from)||!pmdFind(e.to))out.push(pmdId(e.from.module,e.from.id)+' → '+pmdId(e.to.module,e.to.id)+' has a missing endpoint.');});PMD_REL_RULES.forEach(function(rule){(appState[rule.from]||[]).forEach(function(r){pmdRefs(r[rule.field]).forEach(function(v){if(pmdRefId(v,rule.to)===null)out.push(pmdId(rule.from,r.id)+' has an unresolved '+rule.field+': '+v);});});});return out;}
