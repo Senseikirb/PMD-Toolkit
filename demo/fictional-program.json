@@ -1,0 +1,1319 @@
+{
+  "schema": "pmd.program-backup",
+  "schemaVersion": 1,
+  "applicationVersion": "10.1.0",
+  "exportedAt": "2026-09-25T18:18:27.537Z",
+  "state": {
+    "settings": {
+      "toolTitle": "PMD Toolkit",
+      "programName": "Fictional Demo · Delivery Lab",
+      "preparerName": "",
+      "defaultIS": "",
+      "accent": "#58a6ff",
+      "moduleNames": {
+        "dashboard": "Home",
+        "assemblies": "Program Structure",
+        "risks": "Risks",
+        "actions": "Actions",
+        "boms": "Bill of Materials",
+        "inventory": "Inventory",
+        "hwItems": "Hardware Security Review",
+        "decisions": "Decisions",
+        "milestones": "Milestones",
+        "evm": "Earned Value",
+        "changes": "Change Control",
+        "tests": "Verification & Tests",
+        "lessons": "Lessons Learned",
+        "requirements": "Requirements",
+        "tradeStudies": "Trade Studies",
+        "anomalies": "Anomalies",
+        "costTracker": "Costs",
+        "procurement": "Procurement",
+        "links": "Links & Specifications",
+        "actionPlan": "Action Planning",
+        "strategy": "Strategy & Stakeholders"
+      },
+      "dropdownLists": {
+        "riskCategories": [
+          "Technical",
+          "Schedule",
+          "Cost",
+          "Scope",
+          "Resource",
+          "External",
+          "Other"
+        ],
+        "riskStatuses": [
+          "Open",
+          "Mitigating",
+          "Monitoring",
+          "Closed",
+          "Accepted"
+        ],
+        "actionStatuses": [
+          "Open",
+          "In Progress",
+          "Complete",
+          "Deferred"
+        ],
+        "actionPriorities": [
+          "P1 — Critical",
+          "P2 — High",
+          "P3 — Medium",
+          "P4 — Low"
+        ],
+        "actionCategories": [
+          "Special",
+          "Custom"
+        ],
+        "actionTaskTypes": [
+          "Internal Action",
+          "External Dependency",
+          "Milestone",
+          "Delivery/Receipt"
+        ],
+        "bomCategories": [
+          "Component",
+          "Assembly",
+          "Material",
+          "Software",
+          "Other"
+        ],
+        "bomStatuses": [
+          "Approved",
+          "Pending Review",
+          "Obsolete",
+          "Replacement Needed",
+          "On Order"
+        ],
+        "equipmentTypes": [
+          "Server",
+          "Workstation",
+          "Laptop",
+          "Switch",
+          "Router",
+          "Firewall",
+          "KVM",
+          "UPS",
+          "Monitor",
+          "Peripheral",
+          "Storage",
+          "Other"
+        ],
+        "operatingSystems": [],
+        "memoryTypes": [],
+        "sanitizationMethods": [],
+        "classificationLevels": [],
+        "invStatuses": [
+          "In Storage",
+          "Installed",
+          "Removed",
+          "In Transit",
+          "RMA"
+        ],
+        "invLocations": [],
+        "procurementStatuses": [
+          "Needed",
+          "Requested",
+          "Ordered",
+          "Shipped",
+          "Received",
+          "Cancelled"
+        ],
+        "procurementCategories": [
+          "Material",
+          "Equipment",
+          "Tool",
+          "Software",
+          "Service",
+          "Consumable",
+          "Other"
+        ],
+        "invConditions": [
+          "New",
+          "Good",
+          "Fair",
+          "Needs Repair",
+          "Damaged",
+          "Decommissioned"
+        ],
+        "hwReviewStatuses": [
+          "Pending Review",
+          "Approved",
+          "Needs Update",
+          "Flagged",
+          "Decommissioned"
+        ],
+        "swReviewStatuses": [
+          "Pending Review",
+          "Approved",
+          "Needs Update",
+          "Flagged",
+          "Decommissioned"
+        ],
+        "decisionCategories": [
+          "Technical",
+          "Schedule",
+          "Cost",
+          "Scope",
+          "Resource",
+          "Process",
+          "Vendor",
+          "Other"
+        ],
+        "decisionStatuses": [
+          "Proposed",
+          "Approved",
+          "Deferred",
+          "Superseded",
+          "Rejected"
+        ],
+        "milestoneStatuses": [
+          "Not Started",
+          "In Progress",
+          "Complete",
+          "At Risk",
+          "Missed"
+        ],
+        "milestoneCategories": [
+          "Deliverable",
+          "Review",
+          "Release",
+          "Checkpoint",
+          "Other"
+        ],
+        "changeStatuses": [
+          "Submitted",
+          "Under Review",
+          "Approved",
+          "Rejected",
+          "Deferred",
+          "Implemented"
+        ],
+        "testCategories": [
+          "Functional",
+          "Performance",
+          "Integration",
+          "Regression",
+          "Acceptance",
+          "Environmental",
+          "Safety",
+          "Security"
+        ],
+        "verificationMethods": [
+          "Test",
+          "Demonstration",
+          "Inspection",
+          "Analysis",
+          "Simulation"
+        ],
+        "testResults": [
+          "Not Run",
+          "Pass",
+          "Fail",
+          "Blocked",
+          "Skipped"
+        ],
+        "lessonCategories": [
+          "Technical",
+          "Process",
+          "Communication",
+          "Schedule",
+          "Cost",
+          "Quality",
+          "Risk Management",
+          "Testing",
+          "Integration",
+          "Other"
+        ],
+        "lifecyclePhases": [
+          "Planning",
+          "Design",
+          "Development",
+          "Test",
+          "Production",
+          "Deployment",
+          "Sustainment"
+        ],
+        "requirementCategories": [
+          "Functional",
+          "Performance",
+          "Interface",
+          "Environmental",
+          "Safety",
+          "Security",
+          "Reliability",
+          "Maintainability",
+          "Constraint"
+        ],
+        "requirementStatuses": [
+          "Not Verified",
+          "Partial",
+          "Verified",
+          "Deferred",
+          "N/A"
+        ],
+        "costCategories": [
+          "Labor",
+          "Material",
+          "Service",
+          "Equipment",
+          "Travel",
+          "Other"
+        ],
+        "tradeStatuses": [
+          "Open",
+          "In Progress",
+          "Completed",
+          "Cancelled"
+        ],
+        "tradeCategories": [
+          "Technical",
+          "Cost",
+          "Schedule",
+          "Performance",
+          "Risk",
+          "Weight",
+          "Power",
+          "Reliability"
+        ],
+        "anomalyStatuses": [
+          "Open",
+          "Investigating",
+          "Root Cause Identified",
+          "Resolved",
+          "Closed",
+          "Deferred"
+        ],
+        "anomalySeverities": [
+          "Critical",
+          "Major",
+          "Minor",
+          "Cosmetic"
+        ],
+        "anomalyCategories": [
+          "Hardware",
+          "Software",
+          "Firmware",
+          "Mechanical",
+          "Electrical",
+          "Thermal",
+          "EMI/EMC",
+          "Environmental",
+          "Procedural",
+          "Design"
+        ],
+        "softwareTypes": [
+          "Commercial",
+          "Open Source",
+          "Custom",
+          "Other"
+        ],
+        "actionPlanStatuses": [
+          "Not Started",
+          "In Progress",
+          "Blocked",
+          "Complete"
+        ],
+        "evmStatuses": [
+          "Not Started",
+          "In Progress",
+          "Complete"
+        ],
+        "changeClasses": [],
+        "changePriorities": [
+          "Routine",
+          "Urgent",
+          "Emergency"
+        ],
+        "requirementPriorities": [
+          "High",
+          "Medium",
+          "Low"
+        ],
+        "decisionImpacts": [
+          "High",
+          "Medium",
+          "Low"
+        ],
+        "lessonImpacts": [
+          "High",
+          "Medium",
+          "Low"
+        ],
+        "lessonSentiments": [
+          "Positive",
+          "Negative",
+          "Neutral"
+        ],
+        "installStatuses": [
+          "Not Started",
+          "In Progress",
+          "Installed",
+          "Verified"
+        ],
+        "relationshipTypes": [
+          "relates to",
+          "mitigates",
+          "verifies",
+          "depends on",
+          "affects",
+          "fulfills"
+        ],
+        "structureTypes": [
+          "Workstream",
+          "Team",
+          "Service",
+          "Deliverable"
+        ]
+      },
+      "subtitle": "Fictional records for exploring PMD. Import only when you choose.",
+      "programType": "Hardware Development",
+      "setupComplete": true,
+      "currency": "USD",
+      "dateFormat": "iso",
+      "defaultUnits": "",
+      "reportHeading": "Program Report",
+      "theme": "dark",
+      "terminology": {
+        "structure": "Product structure",
+        "node": "Assembly",
+        "child": "Component"
+      },
+      "team": [],
+      "prefixes": {
+        "risks": "R",
+        "racks": "STR",
+        "subs": "SUB",
+        "actions": "AI",
+        "boms": "BOM",
+        "inventory": "INV",
+        "hwItems": "HW",
+        "swItems": "SW",
+        "decisions": "DEC",
+        "milestones": "MS",
+        "evmPackages": "WP",
+        "changes": "CR",
+        "tests": "TC",
+        "lessons": "LL",
+        "requirements": "REQ",
+        "tradeStudies": "TRD",
+        "anomalies": "ANOM",
+        "costItems": "CST",
+        "purchases": "PO",
+        "actionPlanCards": "AP",
+        "stakeholders": "STK",
+        "linkSections": "LINK",
+        "specifications": "SPEC",
+        "actionPlanLanes": "LANE"
+      },
+      "prefixHistory": {},
+      "modules": {
+        "dashboard": {
+          "enabled": true,
+          "order": 0,
+          "group": "Overview"
+        },
+        "assemblies": {
+          "enabled": true,
+          "order": 1,
+          "group": "Plan"
+        },
+        "risks": {
+          "enabled": true,
+          "order": 2,
+          "group": "Plan"
+        },
+        "actions": {
+          "enabled": true,
+          "order": 5,
+          "group": "Execute"
+        },
+        "milestones": {
+          "enabled": true,
+          "order": 3,
+          "group": "Plan"
+        },
+        "decisions": {
+          "enabled": true,
+          "order": 4,
+          "group": "Plan"
+        },
+        "costTracker": {
+          "enabled": true,
+          "order": 7,
+          "group": "Execute"
+        },
+        "requirements": {
+          "enabled": true,
+          "order": 9,
+          "group": "Engineering"
+        },
+        "tests": {
+          "enabled": true,
+          "order": 10,
+          "group": "Engineering"
+        },
+        "anomalies": {
+          "enabled": true,
+          "order": 11,
+          "group": "Engineering"
+        },
+        "changes": {
+          "enabled": true,
+          "order": 12,
+          "group": "Engineering"
+        },
+        "boms": {
+          "enabled": true,
+          "order": 14,
+          "group": "Resources"
+        },
+        "inventory": {
+          "enabled": true,
+          "order": 15,
+          "group": "Resources"
+        },
+        "procurement": {
+          "enabled": true,
+          "order": 16,
+          "group": "Resources"
+        },
+        "hwItems": {
+          "enabled": true,
+          "order": 13,
+          "group": "Engineering"
+        },
+        "evm": {
+          "enabled": true,
+          "order": 17,
+          "group": "Analysis"
+        },
+        "tradeStudies": {
+          "enabled": true,
+          "order": 18,
+          "group": "Analysis"
+        },
+        "lessons": {
+          "enabled": true,
+          "order": 19,
+          "group": "Knowledge"
+        },
+        "links": {
+          "enabled": true,
+          "order": 20,
+          "group": "Knowledge"
+        },
+        "actionPlan": {
+          "enabled": true,
+          "order": 8,
+          "group": "Execute"
+        },
+        "strategy": {
+          "enabled": true,
+          "order": 6,
+          "group": "Plan"
+        }
+      },
+      "dashboard": {
+        "attention": true,
+        "upcoming": true,
+        "activity": true,
+        "dependencies": true,
+        "overview": true
+      },
+      "thresholds": {
+        "upcomingDays": 30,
+        "evmWarning": null,
+        "evmCritical": null,
+        "costVariancePercent": null
+      },
+      "riskModel": {
+        "id": "muhaatto4eh7e",
+        "name": "Multi-factor sum",
+        "formula": "sum",
+        "dimensions": [
+          {
+            "key": "quality",
+            "label": "Quality",
+            "min": 1,
+            "max": 5,
+            "labels": {}
+          },
+          {
+            "key": "cost",
+            "label": "Cost",
+            "min": 1,
+            "max": 5,
+            "labels": {}
+          },
+          {
+            "key": "schedule",
+            "label": "Schedule",
+            "min": 1,
+            "max": 5,
+            "labels": {}
+          },
+          {
+            "key": "reliability",
+            "label": "Reliability",
+            "min": 1,
+            "max": 5,
+            "labels": {}
+          }
+        ],
+        "thresholds": {
+          "medium": 6,
+          "high": 11,
+          "critical": 16,
+          "maxHigh": null,
+          "maxCritical": null
+        },
+        "allowPartial": false
+      },
+      "statusRules": {
+        "risks": {
+          "closed": [
+            "Closed",
+            "Accepted"
+          ],
+          "blocked": []
+        },
+        "actions": {
+          "closed": [
+            "Complete"
+          ],
+          "blocked": [
+            "Blocked"
+          ]
+        },
+        "milestones": {
+          "closed": [
+            "Complete"
+          ],
+          "blocked": [
+            "At Risk",
+            "Missed"
+          ]
+        },
+        "decisions": {
+          "closed": [
+            "Approved",
+            "Rejected",
+            "Superseded"
+          ],
+          "blocked": []
+        },
+        "requirements": {
+          "closed": [
+            "Verified",
+            "N/A"
+          ],
+          "blocked": [],
+          "success": [
+            "Verified"
+          ],
+          "failure": [
+            "Partial",
+            "Not Verified"
+          ]
+        },
+        "tests": {
+          "closed": [
+            "Pass",
+            "Skipped"
+          ],
+          "blocked": [
+            "Fail",
+            "Blocked"
+          ],
+          "success": [
+            "Pass"
+          ],
+          "failure": [
+            "Fail"
+          ]
+        },
+        "changes": {
+          "closed": [
+            "Implemented",
+            "Rejected"
+          ],
+          "blocked": []
+        },
+        "anomalies": {
+          "closed": [
+            "Closed",
+            "Resolved"
+          ],
+          "blocked": []
+        },
+        "procurement": {
+          "closed": [
+            "Received",
+            "Cancelled"
+          ],
+          "blocked": []
+        },
+        "actionPlan": {
+          "closed": [
+            "Complete"
+          ],
+          "blocked": [
+            "Blocked"
+          ]
+        },
+        "tradeStudies": {
+          "closed": [
+            "Completed",
+            "Cancelled"
+          ],
+          "blocked": []
+        }
+      }
+    },
+    "risks": [
+      {
+        "title": "Interface assumptions need verification",
+        "description": "",
+        "category": "",
+        "status": "",
+        "owner": "Fictional Team",
+        "due": "",
+        "mitigation": "",
+        "rackIds": [],
+        "_riskModel": {
+          "id": "muhaats70hr1v",
+          "name": "Likelihood × Impact",
+          "formula": "product",
+          "dimensions": [
+            {
+              "key": "likelihood",
+              "label": "Likelihood",
+              "min": 1,
+              "max": 5,
+              "labels": {}
+            },
+            {
+              "key": "impact",
+              "label": "Impact",
+              "min": 1,
+              "max": 5,
+              "labels": {}
+            }
+          ],
+          "thresholds": {
+            "medium": 5,
+            "high": 10,
+            "critical": 20,
+            "maxHigh": null,
+            "maxCritical": null
+          },
+          "allowPartial": false
+        },
+        "updated": "2026-09-25",
+        "likelihood": 3,
+        "impact": 4,
+        "id": 1,
+        "created": "2026-09-25",
+        "history": [
+          {
+            "date": "2026-09-25",
+            "text": "Risk created."
+          },
+          {
+            "date": "2026-09-25",
+            "text": "Risk updated; assessment methodology retained."
+          }
+        ]
+      }
+    ],
+    "racks": [
+      {
+        "id": 1,
+        "name": "Example product",
+        "identifier": "",
+        "type": "Service",
+        "owner": "Fictional Team",
+        "parentId": null,
+        "description": ""
+      }
+    ],
+    "subs": [],
+    "actions": [
+      {
+        "title": "Confirm interface acceptance criteria",
+        "description": "",
+        "source": "",
+        "assignee": "Fictional Team",
+        "priority": "P2 — High",
+        "status": "In Progress",
+        "category": "",
+        "taskType": "",
+        "blockedBy": "",
+        "startDate": "",
+        "due": "2026-09-30",
+        "linkedRiskId": "R-001",
+        "updated": "2026-09-25",
+        "id": 1,
+        "notes": [],
+        "created": "2026-09-25T18:18:26.572Z",
+        "completed": null
+      }
+    ],
+    "boms": [
+      {
+        "partNumber": "SYNTHETIC-SAME",
+        "partName": "Example interface module",
+        "description": "",
+        "category": "",
+        "qtyRequired": 3,
+        "qtyOnHand": 1,
+        "unitCost": 10,
+        "vendor": "",
+        "leadTime": "",
+        "status": "",
+        "assemblyId": null,
+        "systemNode": "",
+        "testProcedure": "",
+        "installStatus": "Not Started",
+        "storageQty": null,
+        "storageLocation": "",
+        "nhaQty": 1,
+        "notes": "",
+        "updated": "2026-09-25",
+        "id": 1,
+        "created": "2026-09-25",
+        "history": [
+          {
+            "date": "2026-09-25",
+            "text": "BOM item created."
+          }
+        ]
+      }
+    ],
+    "inventory": [
+      {
+        "itemName": "Example bench unit",
+        "serialNumber": "",
+        "partNumber": "SYNTHETIC-SAME",
+        "location": "",
+        "systemNode": "",
+        "installDate": "",
+        "installedBy": "",
+        "status": "",
+        "condition": "",
+        "notes": "",
+        "updated": "2026-09-25",
+        "id": 1,
+        "created": "2026-09-25",
+        "history": [
+          {
+            "date": "2026-09-25",
+            "text": "Item added to inventory."
+          }
+        ]
+      }
+    ],
+    "hwItems": [
+      {
+        "equipType": "",
+        "vendor": "",
+        "model": "",
+        "serialNumber": "",
+        "tagNumber": "",
+        "nodeName": "Example test workstation",
+        "os": "",
+        "biosVersion": "",
+        "biosCompliant": "No",
+        "isMobile": "No",
+        "mobileLocation": "",
+        "mobileSendDate": "",
+        "mobileExpReturn": "",
+        "mobileActReturn": "",
+        "mobileRecertDate": "",
+        "archivedHD": "No",
+        "building": "",
+        "floor": "",
+        "colRoom": "",
+        "office": "",
+        "classification": "",
+        "accountability": "",
+        "uid": "",
+        "ca": "",
+        "sanitization": "",
+        "docLov": false,
+        "docSanProc": false,
+        "docHwReport": false,
+        "hwReportAction": "",
+        "hwReportDest": "",
+        "assemblyId": null,
+        "status": "Pending Review",
+        "notes": "",
+        "memory": [],
+        "updated": "2026-09-25",
+        "id": 1,
+        "created": "2026-09-25",
+        "history": [
+          {
+            "date": "2026-09-25",
+            "text": "Equipment added for review."
+          }
+        ]
+      }
+    ],
+    "swItems": [
+      {
+        "id": 1,
+        "swName": "Example analysis utility",
+        "version": "",
+        "vendor": "",
+        "licenseType": "",
+        "licenseKey": "",
+        "classification": "",
+        "installLocation": "",
+        "system": "",
+        "assemblyId": null,
+        "approvalAuth": "",
+        "approvalDate": "",
+        "expirationDate": "",
+        "stigCompliance": "No",
+        "scapScanned": "No",
+        "status": "",
+        "notes": ""
+      }
+    ],
+    "decisions": [
+      {
+        "title": "Select the integration approach",
+        "description": "",
+        "category": "",
+        "status": "Proposed",
+        "impact": "",
+        "decisionMaker": "Fictional Team",
+        "stakeholders": "",
+        "date": "2026-09-25",
+        "reviewDate": "",
+        "rationale": "",
+        "alternatives": "",
+        "linkedRiskId": null,
+        "updated": "2026-09-25",
+        "id": 1,
+        "created": "2026-09-25",
+        "notes": []
+      }
+    ],
+    "milestones": [
+      {
+        "title": "Integration readiness review",
+        "description": "",
+        "date": "2026-09-30",
+        "status": "Not Started",
+        "owner": "",
+        "category": "",
+        "dependencies": "",
+        "linkedActionIds": "",
+        "updated": "2026-09-25",
+        "id": 1,
+        "created": "2026-09-25",
+        "notes": []
+      }
+    ],
+    "evmPackages": [
+      {
+        "name": "Integration work package",
+        "wbsCode": "",
+        "bac": 1000,
+        "pv": 400,
+        "ev": 300,
+        "ac": 350,
+        "owner": "",
+        "status": "",
+        "startDate": "",
+        "endDate": "",
+        "description": "",
+        "updatedDate": "2026-09-25",
+        "id": 1,
+        "createdDate": "2026-09-25"
+      }
+    ],
+    "changes": [
+      {
+        "ecpNumber": "",
+        "title": "Update the interface boundary",
+        "classification": "",
+        "priority": "",
+        "status": "",
+        "requestor": "",
+        "description": "",
+        "justification": "",
+        "affectedCIs": "",
+        "linkedRiskId": "",
+        "costImpact": null,
+        "scheduleImpact": null,
+        "submitDate": "",
+        "decisionDate": "",
+        "updatedDate": "2026-09-25",
+        "id": 1,
+        "createdDate": "2026-09-25"
+      }
+    ],
+    "tests": [
+      {
+        "title": "Verify backup and restore",
+        "category": "",
+        "reqId": "REQ-001",
+        "verMethod": "",
+        "result": "Pass",
+        "tester": "",
+        "testDate": "",
+        "linkedActionId": "",
+        "procedure": "",
+        "notes": "",
+        "updatedDate": "2026-09-25",
+        "id": 1,
+        "createdDate": "2026-09-25"
+      }
+    ],
+    "lessons": [
+      {
+        "title": "Document decisions when context is fresh",
+        "category": "",
+        "sentiment": "",
+        "phase": "",
+        "impact": "",
+        "description": "",
+        "recommendation": "",
+        "contributor": "",
+        "linkedRiskId": "",
+        "updatedDate": "2026-09-25",
+        "id": 1,
+        "createdDate": "2026-09-25"
+      }
+    ],
+    "requirements": [
+      {
+        "reqId": "",
+        "title": "Retain work through a backup round trip",
+        "type": "",
+        "priority": "",
+        "verMethod": "",
+        "verStatus": "Verified",
+        "source": "",
+        "owner": "",
+        "linkedTestId": "",
+        "linkedActionId": "",
+        "linkedRiskId": "",
+        "allocation": "",
+        "description": "",
+        "rationale": "",
+        "updatedDate": "2026-09-25",
+        "id": 1,
+        "createdDate": "2026-09-25"
+      }
+    ],
+    "tradeStudies": [
+      {
+        "studyId": "",
+        "title": "Compare interface approaches",
+        "category": "Technical",
+        "status": "Open",
+        "lead": "",
+        "dueDate": "",
+        "alternatives": "",
+        "criteria": "",
+        "decision": "",
+        "rationale": "",
+        "linkedReq": "",
+        "linkedRisk": "",
+        "notes": "",
+        "id": 1,
+        "createdDate": "2026-09-25",
+        "updatedDate": "2026-09-25"
+      }
+    ],
+    "anomalies": [
+      {
+        "anomalyId": "",
+        "title": "Unexpected result during bench verification",
+        "system": "",
+        "category": "Hardware",
+        "severity": "Major",
+        "status": "Open",
+        "reportedBy": "",
+        "reportDate": "",
+        "description": "",
+        "stepsToReproduce": "",
+        "rootCause": "",
+        "correctiveAction": "",
+        "preventiveAction": "",
+        "linkedAction": "",
+        "linkedRisk": "",
+        "resolutionDate": "",
+        "notes": "",
+        "id": 1,
+        "createdDate": "2026-09-25",
+        "updatedDate": "2026-09-25"
+      }
+    ],
+    "costItems": [
+      {
+        "wbsCode": "",
+        "title": "Integration materials",
+        "category": "Labor",
+        "budget": 1000,
+        "actual": 100,
+        "committed": 200,
+        "etc": 300,
+        "owner": "",
+        "period": "",
+        "linkedEvm": "",
+        "notes": "",
+        "id": 1,
+        "createdDate": "2026-09-25",
+        "updatedDate": "2026-09-25"
+      }
+    ],
+    "linkSections": [
+      {
+        "id": 1,
+        "name": "Reference library",
+        "links": [
+          {
+            "id": 1,
+            "label": "New link",
+            "url": "",
+            "description": "",
+            "title": "SYNTHETIC local reference"
+          }
+        ]
+      }
+    ],
+    "specifications": [
+      {
+        "id": 1,
+        "docNumber": "SYNTHETIC-SPEC",
+        "description": "",
+        "createdDate": "2026-09-25",
+        "updatedDate": "2026-09-25"
+      }
+    ],
+    "purchases": [
+      {
+        "itemName": "Order prototype interface materials",
+        "vendor": "",
+        "partNumber": "",
+        "category": "Material",
+        "status": "Ordered",
+        "qty": 2,
+        "unitCost": 10,
+        "requester": "",
+        "poNumber": "",
+        "dateNeeded": "2026-09-30",
+        "dateOrdered": "",
+        "eta": "",
+        "dateReceived": "",
+        "trackingNumber": "",
+        "linkedBomId": "",
+        "linkedCostId": "",
+        "notes": "",
+        "id": 1,
+        "createdDate": "2026-09-25",
+        "updatedDate": "2026-09-25"
+      }
+    ],
+    "actionPlanLanes": [
+      {
+        "id": 1,
+        "name": "Integration",
+        "color": "",
+        "order": 1
+      }
+    ],
+    "actionPlanCards": [
+      {
+        "id": 1,
+        "number": "1",
+        "laneId": 1,
+        "title": "Prepare the integration checklist",
+        "description": "",
+        "owner": "",
+        "status": "Not Started",
+        "dependsOn": []
+      }
+    ],
+    "swot": {
+      "strengths": [
+        ""
+      ],
+      "weaknesses": [],
+      "opportunities": [],
+      "threats": []
+    },
+    "stakeholders": [
+      {
+        "id": 1,
+        "name": "Example delivery team",
+        "quadrant": "monitor",
+        "notes": ""
+      }
+    ],
+    "_linkSecNextId": 2,
+    "_linkNextId": 2,
+    "_specNextId": 2,
+    "_purchaseNextId": 2,
+    "_apLaneNextId": 2,
+    "_apCardNextId": 2,
+    "_stakeholderNextId": 2,
+    "activityLog": [],
+    "_evmNextId": 2,
+    "_chgNextId": 2,
+    "_testNextId": 2,
+    "_lesNextId": 2,
+    "_reqNextId": 2,
+    "_trdNextId": 2,
+    "_anomNextId": 2,
+    "_costNextId": 2,
+    "_riskNextId": 2,
+    "_rackNextId": 2,
+    "_subNextId": 1,
+    "_swNextId": 2,
+    "_decNextId": 2,
+    "_msNextId": 2,
+    "relationships": [
+      {
+        "id": "muhaaufja1ppu",
+        "from": {
+          "module": "anomalies",
+          "id": 1
+        },
+        "to": {
+          "module": "actions",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjl8g2h",
+        "from": {
+          "module": "changes",
+          "id": 1
+        },
+        "to": {
+          "module": "risks",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjv86dz",
+        "from": {
+          "module": "purchases",
+          "id": 1
+        },
+        "to": {
+          "module": "boms",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjz02kd",
+        "from": {
+          "module": "purchases",
+          "id": 1
+        },
+        "to": {
+          "module": "costItems",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjfr5h8",
+        "from": {
+          "module": "inventory",
+          "id": 1
+        },
+        "to": {
+          "module": "boms",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufj3my7s",
+        "from": {
+          "module": "hwItems",
+          "id": 1
+        },
+        "to": {
+          "module": "racks",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjlrt9t",
+        "from": {
+          "module": "costItems",
+          "id": 1
+        },
+        "to": {
+          "module": "evmPackages",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjdb9p7",
+        "from": {
+          "module": "decisions",
+          "id": 1
+        },
+        "to": {
+          "module": "risks",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufj7qp9o",
+        "from": {
+          "module": "tradeStudies",
+          "id": 1
+        },
+        "to": {
+          "module": "requirements",
+          "id": 1
+        },
+        "type": "relates to"
+      },
+      {
+        "id": "muhaaufjnmhmb",
+        "from": {
+          "module": "tradeStudies",
+          "id": 1
+        },
+        "to": {
+          "module": "risks",
+          "id": 1
+        },
+        "type": "relates to"
+      }
+    ],
+    "_extensions": {}
+  },
+  "counters": {
+    "_actionNextId": 2,
+    "_bomNextId": 2,
+    "_invNextId": 2,
+    "_hwNextId": 2
+  },
+  "auditTrail": [],
+  "session": {
+    "raci": {},
+    "savedFilters": {},
+    "subViews": {}
+  }
+}

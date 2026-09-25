@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'none'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PMD Toolkit 10.1</title>
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/companion.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
+<meta name="theme-color" content="#161b22">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PMD">
+<meta name="description" content="A blank, configurable program-management workstation and mobile program companion. Offline capable, no account required.">
+</head>
+<body>
+<a href="#contentArea" class="skip-link">Skip to main content</a>
+<div class="app-layout" id="app">
+  <div class="data-warning" role="alert"><span>△</span><span>Data lives only in browser memory — Export before closing</span></div>
+  <header class="app-header" role="banner">
+    <div class="header-left">
+      <div class="logo-icon" id="logoIcon" aria-hidden="true">P</div>
+      <div class="header-titles">
+        <div class="header-title" id="headerTitle">PMD Toolkit</div>
+        <div class="header-subtitle" id="headerSubtitle">No program configured</div>
+      </div>
+    </div>
+    <div class="header-center">
+      <div class="global-search" style="position:relative">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input type="text" id="globalSearchInput" placeholder="Search all modules..." aria-label="Global search" autocomplete="off" onkeyup="handleGlobalSearch(event)">
+        <div class="global-search-results" id="globalSearchResults" aria-label="Search results"></div>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="lastExportTs" style="font-size:10px;color:var(--text-muted);display:none" title="Last export time"></span>
+      <span class="session-timer" id="sessionTimer" title="Time since page load">0:00</span>
+      <button class="btn btn-sm notif-bell" onclick="openNotificationCenter()" aria-label="Notifications" title="Notifications" style="position:relative">⊘ <span class="notif-badge" id="notifBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:8px;align-items:center;justify-content:center;font-weight:700">0</span></button>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle light/dark theme" title="Toggle theme">☽</button>
+      <span class="unsaved-dot" id="unsavedDot" title="You have unsaved changes"></span>
+      <button class="btn btn-sm" onclick="openExportMenu()" aria-label="Export all data">⬇ Export</button>
+      <button class="btn btn-sm" onclick="triggerImport()" aria-label="Import data">⬆ Import</button>
+      <input type="file" id="importFileInput" accept=".json" aria-hidden="true">
+      <button class="btn btn-sm" onclick="openSettings()" aria-label="Open settings">⚙ Settings</button>
+      <button class="btn btn-primary btn-sm" id="btnNew" onclick="handleNewAction()" aria-label="Create new item">+ New</button>
+    </div>
+  </header>
+  <div class="main-area">
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Navigation</div>
+        <div id="navItems" role="tablist" aria-label="Module navigation"></div>
+      </div>
+      <div id="riskSidebarFilters"></div>
+      <div id="actionSidebarFilters"></div>
+      <div id="bomSidebarFilters"></div>
+      <div id="invSidebarFilters"></div>
+      <div id="hwSidebarFilters"></div>
+      <div class="sidebar-footer">
+        <button class="nav-item" style="width:100%" onclick="openSettings()" role="button" aria-label="Open settings">
+          <span class="nav-icon">⚙</span> Settings
+        </button>
+        <div class="sidebar-version" style="cursor:pointer" onclick="openWhatsNew()" title="View changelog">v10.1 · Programless</div>
+      </div>
+    </nav>
+    <main class="content-area" id="contentArea" role="main" aria-live="polite"></main>
+  </div>
+</div>
+<div class="drop-zone" id="dropZone" aria-hidden="true"><div class="drop-zone-inner"><div class="dz-icon">⇪</div><h3>Drop JSON file to import</h3><p>This will replace all current data after confirmation</p></div></div>
+<div class="context-menu" id="contextMenu" role="menu" aria-hidden="true"></div>
+<div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="confirm-box"><h4 id="confirmTitle">Confirm</h4><p id="confirmMsg">Are you sure?</p><div class="confirm-actions"><button class="btn btn-sm" id="confirmCancel" aria-label="Cancel">Cancel</button><button class="btn btn-sm btn-danger" id="confirmBtn" aria-label="Confirm action">Confirm</button></div></div>
+</div>
+<div class="modal-overlay" id="settingsModal" role="dialog" aria-label="Settings"></div>
+<!-- RISK MODAL -->
+<div class="modal-overlay" id="riskModal" role="dialog" aria-modal="true" aria-label="Risk editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="riskModalTitle">New Risk</h2><button class="modal-close" onclick="closeModal('riskModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="riskModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('riskModal')">Cancel</button><button class="btn btn-sm btn-primary" id="riskSaveBtn" onclick="saveRisk()">Add Risk</button></div>
+  </div>
+</div>
+<!-- SUB MODAL -->
+<div class="modal-overlay" id="subModal" role="dialog" aria-modal="true" aria-label="Subassembly editor">
+  <div class="modal" style="width:560px">
+    <div class="modal-header"><h2 id="subModalTitle">New Subassembly</h2><button class="modal-close" onclick="closeModal('subModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="subModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('subModal')">Cancel</button><button class="btn btn-sm btn-primary" id="subSaveBtn" onclick="saveSub()">Add</button></div>
+  </div>
+</div>
+<!-- REPORT MODAL -->
+<div class="modal-overlay" id="reportModal" role="dialog" aria-modal="true" aria-label="Report preview">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2>Email Report Preview</h2><button class="modal-close" onclick="closeModal('reportModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="reportBody"></div>
+    <div class="modal-footer"><span id="copyStatus" style="font-size:12px;color:var(--green);font-weight:500;margin-right:auto"></span><button class="btn btn-sm" onclick="closeModal('reportModal')">Close</button><button class="btn btn-sm" onclick="openReportTab()">↗ Open in New Tab</button><button class="btn btn-sm btn-success" onclick="copyReport()">⎘ Copy for Email</button></div>
+  </div>
+</div>
+<!-- BOM MODAL -->
+<div class="modal-overlay" id="bomModal" role="dialog" aria-modal="true" aria-label="BOM editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="bomModalTitle">New BOM Item</h2><button class="modal-close" onclick="closeModal('bomModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="bomModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('bomModal')">Cancel</button><button class="btn btn-sm btn-primary" id="bomSaveBtn" onclick="saveBom()">Add Item</button></div>
+  </div>
+</div>
+<!-- INVENTORY MODAL -->
+<div class="modal-overlay" id="invModal" role="dialog" aria-modal="true" aria-label="Inventory editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="invModalTitle">New Inventory Item</h2><button class="modal-close" onclick="closeModal('invModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="invModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('invModal')">Cancel</button><button class="btn btn-sm btn-primary" id="invSaveBtn" onclick="saveInventory()">Add Item</button></div>
+  </div>
+</div>
+<!-- ACTION MODAL -->
+<div class="modal-overlay" id="actionModal" role="dialog" aria-modal="true" aria-label="Action editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="actionModalTitle">New Action</h2><button class="modal-close" onclick="closeModal('actionModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="actionModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('actionModal')">Cancel</button><button class="btn btn-sm btn-primary" id="actionSaveBtn" onclick="saveAction()">Add Action</button></div>
+  </div>
+</div>
+<!-- HW REVIEW MODAL -->
+<div class="modal-overlay" id="hwModal" role="dialog" aria-modal="true" aria-label="Security Review editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="hwModalTitle">New Equipment</h2><button class="modal-close" onclick="closeModal('hwModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="hwModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('hwModal')">Cancel</button><button class="btn btn-sm btn-primary" id="hwSaveBtn" onclick="saveHwItem()">Add Equipment</button></div>
+  </div>
+</div>
+<!-- HW REPORT MODAL -->
+<div class="modal-overlay" id="hwReportModal" role="dialog" aria-modal="true" aria-label="Security Report Generator">
+  <div class="modal modal-wide" style="width:960px">
+    <div class="modal-header"><h2>Security Report Generator</h2><button class="modal-close" onclick="closeModal('hwReportModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="hwReportBody"></div>
+    <div class="modal-footer"><span id="hwCopyStatus" style="font-size:12px;color:var(--green);font-weight:500;margin-right:auto"></span><button class="btn btn-sm" onclick="closeModal('hwReportModal')">Close</button><button class="btn btn-sm" onclick="hwReportDownloadCSV()">⬇ Download CSV</button><button class="btn btn-sm" onclick="hwReportOpenTab()">↗ Print View</button><button class="btn btn-sm btn-primary" onclick="hwReportCopyTSV()">⎘ Copy for Excel</button></div>
+  </div>
+</div>
+<!-- SOFTWARE REVIEW MODAL -->
+<div class="modal-overlay" id="swModal" role="dialog" aria-modal="true" aria-label="Software Review editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="swModalTitle">New Software</h2><button class="modal-close" onclick="closeModal('swModal')" aria-label="Close">✕</button></div>
+    <div class="modal-body" id="swModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('swModal')">Cancel</button><button class="btn btn-sm btn-primary" id="swSaveBtn" onclick="saveSwItem()">Add Software</button></div>
+  </div>
+</div>
+<!-- DECISION MODAL -->
+<div class="modal-overlay" id="decisionModal" role="dialog" aria-modal="true" aria-label="Decision editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="decisionModalTitle">New Decision</h2><button class="modal-close" onclick="closeModal('decisionModal')" aria-label="Close">&#10005;</button></div>
+    <div class="modal-body" id="decisionModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('decisionModal')">Cancel</button><button class="btn btn-sm btn-primary" id="decisionSaveBtn" onclick="saveDecision()">Add Decision</button></div>
+  </div>
+</div>
+<!-- MILESTONE MODAL -->
+<div class="modal-overlay" id="milestoneModal" role="dialog" aria-modal="true" aria-label="Milestone editor">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2 id="milestoneModalTitle">New Milestone</h2><button class="modal-close" onclick="closeModal('milestoneModal')" aria-label="Close">&#10005;</button></div>
+    <div class="modal-body" id="milestoneModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-sm" onclick="closeModal('milestoneModal')">Cancel</button><button class="btn btn-sm btn-primary" id="milestoneSaveBtn" onclick="saveMilestone()">Add Milestone</button></div>
+  </div>
+</div>
+<!-- PASTE IMPORT MODAL -->
+<div class="modal-overlay" id="pasteModal" role="dialog" aria-modal="true" aria-label="Paste import">
+  <div class="modal modal-wide">
+    <div class="modal-header"><h2>Paste Import from Spreadsheet</h2><button class="modal-close" onclick="closeModal('pasteModal')" aria-label="Close">&#10005;</button></div>
+    <div class="modal-body" id="pasteModalBody"></div>
+    <div class="modal-footer"><span id="pasteStatus" style="font-size:12px;color:var(--text-secondary);margin-right:auto"></span><button class="btn btn-sm" onclick="closeModal('pasteModal')">Cancel</button><button class="btn btn-sm btn-primary" onclick="executePasteImport()">Import Rows</button></div>
+  </div>
+</div>
+<!-- DETAIL PANEL -->
+<div class="detail-panel" id="detailPanel" role="complementary">
+  <div class="detail-header"><h3 id="detailPanelTitle">—</h3><div style="display:flex;gap:4px"><button class="btn-icon" id="detailEditBtn" aria-label="Edit">✎</button><button class="btn-icon" onclick="closeDetailPanel()" aria-label="Close">✕</button></div></div>
+  <div class="detail-body" id="detailPanelBody"></div>
+</div>
+<!-- KEYBOARD SHORTCUTS OVERLAY -->
+<div class="kb-overlay" id="kbOverlay" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+  <div class="kb-box">
+    <div class="kb-header"><h2>Keyboard Shortcuts</h2><button class="modal-close" onclick="closeKbOverlay()" aria-label="Close">&#10005;</button></div>
+    <div class="kb-body">
+      <div class="kb-section"><h4>Navigation</h4>
+        <div class="kb-row"><span class="kb-label">Go to Dashboard</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">D</span></div></div>
+        <div class="kb-row"><span class="kb-label">Go to Risks</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">R</span></div></div>
+        <div class="kb-row"><span class="kb-label">Go to Actions</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">A</span></div></div>
+        <div class="kb-row"><span class="kb-label">Go to BOMs</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">B</span></div></div>
+        <div class="kb-row"><span class="kb-label">Go to Inventory</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">I</span></div></div>
+        <div class="kb-row"><span class="kb-label">Go to Security Review</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">H</span></div></div>
+        <div class="kb-row"><span class="kb-label">Go to Assemblies</span><div class="kb-keys"><span class="kb-key">G</span><span class="kb-key">S</span></div></div>
+      </div>
+      <div class="kb-section"><h4>Actions</h4>
+        <div class="kb-row"><span class="kb-label">New item</span><div class="kb-keys"><span class="kb-key">N</span></div></div>
+        <div class="kb-row"><span class="kb-label">Quick Entry mode</span><div class="kb-keys"><span class="kb-key">Shift</span><span class="kb-key">N</span></div></div>
+        <div class="kb-row"><span class="kb-label">Focus global search</span><div class="kb-keys"><span class="kb-key">Ctrl</span><span class="kb-key">K</span></div></div>
+        <div class="kb-row"><span class="kb-label">Focus module search</span><div class="kb-keys"><span class="kb-key">/</span></div></div>
+        <div class="kb-row"><span class="kb-label">Export menu</span><div class="kb-keys"><span class="kb-key">Ctrl</span><span class="kb-key">E</span></div></div>
+        <div class="kb-row"><span class="kb-label">Import JSON</span><div class="kb-keys"><span class="kb-key">Ctrl</span><span class="kb-key">I</span></div></div>
+        <div class="kb-row"><span class="kb-label">Open settings</span><div class="kb-keys"><span class="kb-key">Ctrl</span><span class="kb-key">,</span></div></div>
+        <div class="kb-row"><span class="kb-label">Toggle theme</span><div class="kb-keys"><span class="kb-key">T</span></div></div>
+      </div>
+      <div class="kb-section"><h4>Edit</h4>
+        <div class="kb-row"><span class="kb-label">Undo</span><div class="kb-keys"><span class="kb-key">Ctrl</span><span class="kb-key">Z</span></div></div>
+        <div class="kb-row"><span class="kb-label">Redo</span><div class="kb-keys"><span class="kb-key">Ctrl</span><span class="kb-key">Y</span></div></div>
+      </div>
+      <div class="kb-section"><h4>General</h4>
+        <div class="kb-row"><span class="kb-label">Show this help</span><div class="kb-keys"><span class="kb-key">?</span></div></div>
+        <div class="kb-row"><span class="kb-label">Close panel / modal</span><div class="kb-keys"><span class="kb-key">Esc</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="liveAnnouncer" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0"></div>
+<div class="row-tooltip" id="rowTooltip"></div>
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+<script src="assets/handlers.js"></script>
+<script src="assets/security.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/companion.js"></script>
+<script src="assets/device.js"></script>
+<script src="assets/pwa.js"></script>
+</body>
+</html>
