@@ -1,8 +1,8 @@
 /* Application shell only. Never caches Program Backups or third-party URLs. */
 'use strict';
-const RELEASE='pmd-10.1.0-1';
+const RELEASE='pmd-10.2.0-1';
 const CACHE=RELEASE+':'+self.registration.scope;
-const SHELL=['./','./index.html','./assets/app.css','./assets/app.js','./assets/companion.css','./assets/companion.js','./assets/device.js','./assets/pwa.js','./assets/security.js','./assets/handlers.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png','./icons/icon.svg'];
+const SHELL=['./','./index.html','./assets/app.css','./assets/app.js','./assets/validation.js','./assets/workspace.js','./assets/companion.css','./assets/companion.js','./assets/device.js','./assets/pwa.js','./assets/security.js','./assets/handlers.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png','./icons/icon.svg'];
 const URLS=SHELL.map(path=>new URL(path,self.registration.scope).href);
 self.addEventListener('install',event=>event.waitUntil((async()=>{
   const cache=await caches.open(CACHE);

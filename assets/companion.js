@@ -50,7 +50,7 @@ function pmdMobileHome(){
   const area=document.getElementById('contentArea'), entries=pmdEnabledModules().flatMap(m=>pmdMobileCollections(m.key));
   const attention=pmdAttention(), upcoming=pmdUpcoming();
   const attentionKnown=entries.some(e=>pmdStatus(e.record)||pmdDate(e.record)||e.record.priority||(e.module==='risks'&&pmdAssess(e.record).hasAny));
-  const upcomingKnown=entries.some(e=>['actions','milestones','procurement','tests','risks','changes'].includes(e.module)&&pmdDate(e.record));
+  const upcomingKnown=entries.some(e=>pmdDueDate(e.module,e.record));
   const section=(name,list,empty)=>'<section class="pc-section"><div class="pc-section-heading"><h2>'+name+'</h2><span>'+list.length+'</span></div>'+(list.length?list.slice(0,5).map(x=>{const m=pmdModule(x.module),r=pmdFind({module:m.array,id:x.id});return r?pmdCard({array:m.array,module:m.key,record:r},x.reason):'';}).join('')+(list.length>5?'<button class="btn pc-wide" data-queue="'+(name==='Needs attention'?'attention':'upcoming')+'">View all '+list.length+'</button>':''):'<p class="pc-empty-line">'+empty+'</p>')+'</section>';
   let html='<div class="pc-page-title"><p class="pmd-eyebrow">PROGRAM COMPANION</p><h1>'+esc(appState.settings.programName||'Your workspace')+'</h1><p class="pmd-muted">'+esc(appState.settings.subtitle||'A clear view. A quick next step.')+'</p></div>';
   if(!entries.length){
@@ -98,6 +98,7 @@ function pmdMobileList(){
   pmdMobileContext();
 }
 function pmdSheet(title,body,footer){
+  PMD_COMPANION.formDirty=false;
   const focus=document.activeElement;
   if(!focus?.closest('#pcSheet')&&focus!==document.body)PMD_COMPANION.lastFocus=focus;
   pmdCloseSheet(false);
@@ -202,9 +203,9 @@ function pmdSearchEntries(){
 function pmdFindSearch(query){const words=query.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);if(!words.length)return [];return pmdSearchEntries().filter(e=>words.every(w=>e.text.includes(w)));}
 function pmdOpenSearch(){pmdSheet('Search your program','<label class="sr-only" for="pcSearch">Search all enabled modules</label><input type="search" id="pcSearch" autofocus placeholder="Title, ID, owner, part number…" autocomplete="off"><p class="pmd-muted">Search enabled modules. Disabled records remain in your backup.</p><div id="pcSearchResults"><p>Type to find a record.</p></div>');}
 function pmdSearchMobile(query){const found=pmdFindSearch(query);document.getElementById('pcSearchResults').innerHTML=query.trim()?'<p class="pmd-muted">'+found.length+' matches'+(found.length>40?' · first 40 shown, refine your search':'')+'</p>'+found.slice(0,40).map(e=>pmdCard(e)).join(''):'<p>Type to find a record.</p>';}
-function pmdOpenQueue(kind){const list=kind==='attention'?pmdAttention():pmdUpcoming();pmdSheet(kind==='attention'?'Needs attention':'Coming up','<p class="pmd-muted">'+list.length+' items'+(list.length>100?' · first 100 shown; narrow in a module':'')+'</p>'+list.slice(0,100).map(x=>{const m=pmdModule(x.module),r=pmdFind({module:m.array,id:x.id});return r?pmdCard({array:m.array,module:m.key,record:r},x.reason):'';}).join(''));}
+function pmdLegacyQueue(kind){const list=kind==='attention'?pmdAttention():pmdUpcoming();pmdSheet(kind==='attention'?'Needs attention':'Coming up','<p class="pmd-muted">'+list.length+' items'+(list.length>100?' · first 100 shown; narrow in a module':'')+'</p>'+list.slice(0,100).map(x=>{const m=pmdModule(x.module),r=pmdFind({module:m.array,id:x.id});return r?pmdCard({array:m.array,module:m.key,record:r},x.reason):'';}).join(''));}
 function pmdOpenMore(){
-  pmdSheet('Workspace & backup','<div class="pc-status-card"><strong id="pcMoreMode">'+esc(typeof pmdDevice!=='undefined'&&pmdDevice.enabled?'Trusted Device Mode':'Session Mode')+'</strong><p>Program data stays on this device. There is no automatic cross-device synchronization.</p></div><button class="pc-module" data-backup>Download Program Backup <span>↓</span></button><button class="pc-module" data-share>Share Backup <span>↗</span></button><button class="pc-module" data-import>Import Program Backup <span>↑</span></button><button class="pc-module" data-device>Data mode & device storage <span>›</span></button><button class="pc-module" data-settings="program">Program Settings <span>›</span></button><div class="pc-two"><button class="btn" data-undo>Undo</button><button class="btn" data-redo>Redo</button></div><button class="pc-module" data-theme>Switch to '+(currentTheme==='dark'?'light':'dark')+' theme <span>◐</span></button><button class="pc-module" data-install>Install & offline help <span>›</span></button><button class="pc-module" data-check-update>Check for app update <span>↻</span></button>'+(PMD_COMPANION.desktopOnPhone?'<button class="btn pc-wide" data-companion-view>Return to companion view</button>':'')+'<p class="pmd-muted">PMD '+PMD_VERSION+' · Blank by default</p>');
+  pmdSheet('Workspace & backup','<div class="pc-status-card"><strong id="pcMoreMode">'+esc(typeof pmdDevice!=='undefined'&&pmdDevice.enabled?'Trusted Device Mode':'Session Mode')+'</strong><p>Program data stays on this device. There is no automatic cross-device synchronization.</p></div><button class="pc-module" data-review-work>Review work <span>›</span></button><button class="pc-module" data-backup-center>Backup & recovery <span>›</span></button><button class="pc-module" data-backup>Download Program Backup <span>↓</span></button><button class="pc-module" data-share>Share Backup <span>↗</span></button><button class="pc-module" data-import>Import Program Backup <span>↑</span></button><button class="pc-module" data-device>Data mode & device storage <span>›</span></button><button class="pc-module" data-settings="program">Program Settings <span>›</span></button><div class="pc-two"><button class="btn" data-undo>Undo</button><button class="btn" data-redo>Redo</button></div><button class="pc-module" data-theme>Switch to '+(currentTheme==='dark'?'light':'dark')+' theme <span>◐</span></button><button class="pc-module" data-install>Install & offline help <span>›</span></button><button class="pc-module" data-check-update>Check for app update <span>↻</span></button>'+(PMD_COMPANION.desktopOnPhone?'<button class="btn pc-wide" data-companion-view>Return to companion view</button>':'')+'<p class="pmd-muted">PMD '+PMD_VERSION+' · Blank by default</p>');
 }
 function pmdInstallHelp(){pmdSheet('Install PMD','<h3>iPhone Home Screen</h3><ol><li>Open the hosted PMD page in Safari.</li><li>Open Share, then choose Add to Home Screen.</li><li>Open the PMD icon and wait for “Offline ready” once while connected.</li></ol><p>The offline shell contains the application only. Session Mode does not retain your program when the app closes. Import a backup or deliberately enable Trusted Device Mode.</p><p>Safari tabs and Home Screen apps may have separate storage. Use a JSON backup to move a program. Device storage can be cleared by the browser or operating system.</p><p>External specification websites need their own connection; PMD does not cache them.</p>');}
 
@@ -237,7 +238,7 @@ function pmdCompanionInit(){
     const b=e.target.closest('button,a');if(!b)return;const d=b.dataset;
     if(d.route){switchModule(d.route);return;}
     if(d.sheet){({modules:pmdOpenModules,search:pmdOpenSearch,new:pmdOpenNew,more:pmdOpenMore,filters:pmdOpenFilters})[d.sheet]?.();return;}
-    if('closeSheet'in d){pmdCloseSheet();return;}
+    if('closeSheet'in d){pmdRequestCloseSheet();return;}
     if(d.openArray){closeGlobalSearch();if(pmdPhone()||b.closest('#pcSheet')||!pmdModule(d.openArray))pmdOpenMobileRecord(d.openArray,Number(d.openId));else pmdDesktopNavigate(d.openArray,Number(d.openId));return;}
     if(d.quick){pmdOpenQuick(d.quick,Number(d.quickId)||undefined);return;}
     if(d.page){PMD_COMPANION.page+=Number(d.page);renderContent();document.getElementById('contentArea').scrollTop=0;return;}
@@ -272,11 +273,11 @@ function pmdCompanionInit(){
   document.addEventListener('submit',e=>{if(e.target.id==='pcQuickForm'){e.preventDefault();pmdSaveQuick(e.target);}});
   document.addEventListener('keydown',e=>{
     if(!sheet.hidden){
-      if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();pmdCloseSheet();}
+      if(e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();pmdRequestCloseSheet();}
       if(e.key==='Tab'){const focus=[...sheet.querySelectorAll('button,a[href],input,select,textarea,summary')].filter(x=>!x.disabled&&x.getClientRects().length);const first=focus[0],last=focus.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
     }else if(pmdPhone()&&((e.ctrlKey||e.metaKey)&&e.key==='k')){e.preventDefault();e.stopImmediatePropagation();pmdOpenSearch();}
   },true);
-  sheet.addEventListener('click',e=>{if(e.target===sheet)pmdCloseSheet();});
+  sheet.addEventListener('click',e=>{if(e.target===sheet)pmdRequestCloseSheet();});
   // Sheets adapt in place; rotating/resizing must never discard an unfinished edit.
   matchMedia(PMD_MOBILE_QUERY).addEventListener('change',()=>{renderContent();pmdMobileContext();});
   // VisualViewport follows the iPhone keyboard without guessing a keyboard height.

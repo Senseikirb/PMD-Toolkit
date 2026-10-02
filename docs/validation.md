@@ -1,59 +1,57 @@
-# Validation report — PMD 10.1.0
+# Validation report — PMD 10.2.0
 
-**113 browser test groups passed**, plus the static preflight checks. Final execution: 2026-09-25T19:07:49.677Z. The suite ran against the delivered static source using installed Google Chrome on Windows through Playwright. It included real DOM interactions, file input/download operations, IndexedDB transactions and service-worker lifecycle operations. Phone sizes and touch behavior were emulated in Chromium; these results are not physical iPhone certification.
+**138 browser test groups passed**, plus static syntax/packaging/security-boundary checks. Executed on 2026-10-02 using installed Google Chrome on Windows through Playwright. The retained suites ran end to end; the final numeric-audit fix was followed by the targeted resilience suite and static checks. Phone/touch sizes are emulated. No physical iPhone result is implied.
 
 ## Executed
 
 | Suite | Passing groups |
 | --- | ---: |
-| Retained engine / module regression | 40 |
-| Backup, legacy migration and desktop interactions | 21 |
-| Mobile companion, data modes, PWA and performance | 41 |
-| Final interaction, recovery and accessibility checks | 11 |
+| Engine and modules | 40 |
+| Migration and desktop interactions | 21 |
+| Mobile, storage and PWA | 41 |
+| Interaction and accessibility checks | 11 |
+| Security, recovery and review workflows | 25 |
 
-- Blank and fictional populated programs: every one of 21 destinations at 320, 360, 390, 430, 768 and 1440 pixels, plus 844 × 390 touch-phone landscape. No horizontal page overflow in those module renders.
-- Software, hardware, general-project and full-feature synthetic configuration scenarios; presets never inserted records into startup.
-- Retained create/edit/delete paths, undo/redo, typed structure, configurable scoring, EVM missing/zero arithmetic, receipts, intentional relationships and referenced-record deletion.
-- Mobile module picker, renamed/reordered/disabled modules, search including nested notes and vendor/part information, quick capture, individual edits, dated notes, detail links, owner/open/overdue/status filtering, sorting and pagination.
-- Required-title validation; custom dropdowns; deep fields retained during quick edits; primary Save-button dispatch across 16 workstation editors; context-menu event propagation; exactly one action-row activation after 15 renders.
-- Actual backup downloads and file imports, JSON round trips, malformed-import preservation, V10.0 backup import and representative V9.5 migration. Native Share Backup's ordinary-download fallback was executed.
-- Fresh Session Mode created no program database or Web Storage; reload intentionally cleared the session. Trusted Device Mode required an explicit checkbox, saved transactionally and restored on reload. Simulated quota failure, concurrent-window conflict, corrupt current save, previous-copy recovery, malformed device envelope and disable/clear paths were exercised.
-- Service-worker registration under both root and /PMD-Toolkit/ paths; exact shell-cache contents; offline reload and offline capture; a simulated new release waiting for explicit backup acknowledgment; activation blocked by another open window; approved update/reload and old cache cleanup.
-- Light/dark screenshots; named quick-form controls; primary-button contrast; 44 px primary touch targets; sheet focus trap/Escape; sortable-header keyboard activation; compressed visual viewport keeping Save visible; Chromium print-to-PDF generation.
-- Script/event/URL injection fixtures were inert. No unhandled page exceptions or off-origin application requests occurred in the completed runs.
+- Blank and fictional populated programs across all 21 destinations at 320, 360, 390, 430, 768 and 1440 px, plus 844 × 390 touch landscape. Existing checks cover navigation, CRUD, undo/redo, global search, sorting, filtering, renamed/reordered/disabled modules, relationships and reports.
+- Real form/button/keyboard interactions, file downloads and selections, JSON round trips, V10.0 imports and V9.5 migration. Sparse optional fields, custom zero-based risk scales, measured zero/missing-input semantics and referenced deletion remain covered.
+- New review queue pagination beyond 100 items, owner/module context, detail return, phone/desktop fit, and light/dark themes. Quick-edit/note Escape/Close keep-discard behavior was exercised with actual typed inputs.
+- Download requests retain the dirty marker. Stale acknowledgment cannot cover newer edits. Chosen backup files are validated/compared without replacing current data. Replacement previews report changed/added/removed counts.
+- Malformed notes, audit/filter metadata, risk-key collisions, unsafe counters, impossible dates, invalid relationship collections and prototype-shaped labels have focused tests. Nested template/active SVG/tracking attributes were removed by the guard. CSV formula-like text was neutralized in an actual download. Numeric audit values including zero remain readable and exportable.
+- Default Session Mode did not create program storage. Trusted Device Mode consent, transactions, reload restore, quota errors, corrupt current/previous recovery, invalid envelopes, clearing and concurrent windows were exercised. Revision notices paused stale windows; explicit saved-program recovery retained the latest copy. A cancelled startup cannot replace an in-progress form with late recovery UI.
+- Failure injection confirms import commit rollback restores records, counters, undo/redo and dirty state. Handler repetition checks, focus/keyboard behavior, named controls, primary contrast/touch targets, compressed viewport Save visibility, and print-to-PDF remain covered.
+- Service-worker registration at root/project paths, shell-only caching, offline reload/capture, offline-to-online update, explicit update acknowledgment, secondary-window blocking and cache cleanup passed. A null-registration offline issue discovered during this work was repaired and re-tested.
+- No unhandled page exceptions or off-origin application requests in the completed suites. Test programs were synthetic and are not part of production startup.
 
 ## Measured performance
 
-One run on the test machine; timings are regression evidence, not phone hardware promises. The large fixture contains 5,000 records across actions, requirements, tests, BOM and purchases, 1,000 per collection.
+These are single-machine observations, not promises about iPhone hardware. One throttled startup run exceeded the 3-second guard during development; subsequent completed runs passed. No timing threshold was relaxed to obtain a pass.
 
 | Measurement | Result |
 | --- | ---: |
-| Blank initial DOM | 352 elements |
-| 5,000-record program: rendered phone cards | 40 |
-| Total DOM in that phone list | 601 elements |
-| Phone list render | 7.7 ms |
-| First global search, including index construction | 11.8 ms |
-| Subsequent cached-index search | 1.6 ms |
-| Complete backup validation | 65.4 ms |
-| Reported JS heap at measurement (not peak/RSS) | 19.8 MiB |
-| Phone list render with 4× CPU slowdown | 26.2 ms |
-| Fresh program ready with 4× CPU slowdown | 1274.8 ms |
-| Offline shell ready, observed upper bound at 4× slowdown | 1469.6 ms |
+| Fresh blank DOM | 357 elements |
+| 5,000-record program: phone cards rendered | 40 |
+| Total DOM in that phone list | 606 elements |
+| Phone module render | 17.5 ms |
+| First indexed search | 37.2 ms |
+| Cached search | 3.7 ms |
+| 5,000-record backup validation | 108.0 ms |
+| Reported JS heap at measurement (not peak/RSS) | 26.5 MiB |
+| Phone render with 4× CPU slowdown | 54.2 ms |
+| Fresh program ready with 4× CPU slowdown | 2404.6 ms |
+| 10,000 records / 10,000 combined references: backup validation | 94.9 ms |
 
-The large desktop action register remained paginated at 50 rows. Applicable regression budgets passed. Search indexing is lazy and invalidated on mutations; phone lists and queues are bounded.
+A separate before/after probe of the same 10,000-record graph measured 693.2 ms before temporary relationship indexes and 86.2 ms afterward. The final suite measurement above is a different run. Lookup indexes are local to each operation, avoiding stale cache state.
 
 ## Statically inspected
 
-Manifest fields, icon dimensions, relative project paths, worker cache allowlist, no automatic skipWaiting, schema/version boundaries, storage opt-in boundary, URL allowlist, guarded HTML sinks, external event registry, CSP, safe-area and reduced-motion CSS, public-source credential/path patterns, package/runtime dependency separation and absence of a project license were inspected or checked without claiming physical browser behavior.
+Source and diffs: JSON/schema/storage boundaries, error/rollback paths, guarded sinks, handler registry, spreadsheet encoding, URLs, manifest/asset paths, worker allowlist/update policy, safe-area/reduced-motion CSS and public-content/credential patterns. New CI uses pinned actions, read-only permissions and no deployment step. Generated handlers and Git whitespace checks are included. Static inspection is not an executed attack test for every legacy renderer.
 
-Source security inspection is not a penetration test. Desktop code remains the retained specialist engine; this change refactors the boundaries needed for public/mobile operation without replacing it.
+GitHub's repository API reports Pages built from `main` at the project URL. This branch is **not** merged or deployed by the agent. CI execution is reported on the PR; local results above do not claim that a remote job ran.
 
 ## Manual verification remaining
 
-- Physical iPhone Safari and Home Screen installation, actual safe-area cutouts, virtual keyboard transitions, swipe/back expectations, native share-sheet destinations, Files import/export and private-browsing behavior.
-- Real iOS memory pressure, storage eviction and abrupt termination; permanent retention is not guaranteed.
-- VoiceOver and a complete accessibility audit; all printer/clipboard/email integrations; every specialist context-menu or drag permutation.
-- GitHub Pages deployment headers and the final public URL after owner review/merge/Pages configuration. Local tests exercised the equivalent project subpath, not a deployed live site.
-- 50 MB imports, much larger graphs, long-running sessions and independent security review.
+- Physical iPhone Safari/Home Screen installation, actual safe-area cutouts and keyboard behavior, Files/native sharing, VoiceOver, private browsing, eviction and OS termination.
+- Independent security/accessibility review; every specialist drag/context-menu/clipboard/printing permutation and long sessions under mobile memory pressure.
+- 50 MB inputs, substantially larger graphs, deployment-specific headers and a complete production-device acceptance pass after merge.
 
-See [machine-readable results](validation-results.json), [development instructions](development.md) and [known limitations](limitations.md). Screenshots in [images](images/) show the actual current application with blank or clearly fictional data.
+See [machine-readable results](validation-results.json), [product review](product-review.md), [threat model](threat-model.md), [limitations](limitations.md), and [current screenshots](images/).

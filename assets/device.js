@@ -4,6 +4,22 @@
 const pmdDevice={enabled:false,state:'Session Mode',db:null,revision:0,timer:null,chain:Promise.resolve(),generation:0,recovery:null,lastSaved:null};
 const PMD_DEVICE_DB='pmd-trusted-device:'+new URL('.',location.href).pathname;
 const PMD_DEVICE_STORE='program';
+// Only revision notices cross windows. Program content never travels on this channel.
+function pmdDeviceEnvelope(saved){return !!saved&&saved.format===1&&Number.isSafeInteger(saved.revision)&&saved.revision>0&&saved.revision<Number.MAX_SAFE_INTEGER&&typeof saved.savedAt==='string'&&Number.isFinite(Date.parse(saved.savedAt));}
+function pmdDeviceNotice(cleared){
+  if(!pmdDevice.enabled)return;
+  clearTimeout(pmdDevice.timer);pmdDevice.generation++;pmdDevice.paused=true;
+  pmdDevice.state=cleared?'Device copy cleared elsewhere — saving paused':'Changed in another window — saving paused';
+  pmdStorageStatus();toast(pmdDevice.state+'. This session is preserved. Export it before reviewing the saved program.','info');
+}
+function pmdConnectDeviceChannel(){
+  if(pmdDevice.channel||!window.BroadcastChannel)return;
+  try{const channel=pmdDevice.channel=new BroadcastChannel(PMD_DEVICE_DB);channel.onmessage=event=>{const d=event.data;if(!d||d.type!=='pmd-device-revision')return;if(d.cleared===true||Number.isSafeInteger(d.revision)&&d.revision!==pmdDevice.revision)pmdDeviceNotice(d.cleared===true);};}catch{/* Revision checks in the write transaction remain authoritative. */}
+}
+function pmdPublishDeviceRevision(cleared=false){pmdDevice.channel?.postMessage({type:'pmd-device-revision',revision:pmdDevice.revision,cleared});}
+async function pmdReviewSavedDevice(){
+  try{const saved=await pmdReadDevice(pmdDevice.db||await pmdOpenDB(false));if(!saved){pmdDevice.enabled=false;pmdDevice.paused=false;pmdDevice.revision=0;pmdDevice.recovery=null;pmdDevice.state='Session Mode';pmdOpenDevice();pmdStorageStatus();return;}pmdDevice.recovery=saved;pmdRecoverDevice();}catch{toast('Saved program could not be read. Keep this session and export a backup.','error');}
+}
 function pmdStorageStatus(){
   const offline=!navigator.onLine, shell=location.protocol==='file:'?'Local files':pmdShell.ready?'Offline ready':pmdShell.failed?'Offline shell unavailable':'Preparing offline shell';
   const state=pmdDevice.enabled?pmdDevice.state:'Session Mode';
@@ -13,23 +29,23 @@ function pmdStorageStatus(){
 }
 function pmdOpenDB(create){
   return new Promise((resolve,reject)=>{
-    const request=indexedDB.open(PMD_DEVICE_DB,1);
+    const request=indexedDB.open(PMD_DEVICE_DB,1);let abandoned=false;
     request.onupgradeneeded=()=>{if(!create){request.transaction.abort();return;}request.result.createObjectStore(PMD_DEVICE_STORE);};
     request.onerror=()=>reject(request.error||Error('Device database unavailable.'));
-    request.onblocked=()=>reject(Error('Close other PMD windows, then try again.'));
-    request.onsuccess=()=>{const db=request.result;db.onversionchange=()=>{db.close();pmdDevice.db=null;pmdDevice.enabled=false;pmdDevice.state='Device storage changed';pmdStorageStatus();};resolve(db);};
+    request.onblocked=()=>{abandoned=true;reject(Error('Close other PMD windows, then try again.'));};
+    request.onsuccess=()=>{const db=request.result;if(abandoned){db.close();return;}db.onversionchange=()=>{db.close();pmdDevice.db=null;pmdDevice.enabled=false;pmdDevice.state='Device storage changed';pmdStorageStatus();};resolve(db);};
   });
 }
 function pmdReadDevice(db){return new Promise((resolve,reject)=>{const tx=db.transaction(PMD_DEVICE_STORE,'readonly'),r=tx.objectStore(PMD_DEVICE_STORE).get('active');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
 function pmdDeviceError(error){pmdDevice.state='Save failed — export now';pmdStorageStatus();toast('Device save failed. Your current program remains in memory. Export a backup. '+(error?.message||''),'error');}
 function pmdScheduleSave(){
-  if(!pmdDevice.enabled)return;pmdDevice.state='Changes not yet saved';pmdStorageStatus();clearTimeout(pmdDevice.timer);
+  if(!pmdDevice.enabled||pmdDevice.paused)return;pmdDevice.state='Changes not yet saved';pmdStorageStatus();clearTimeout(pmdDevice.timer);
   pmdDevice.timer=setTimeout(()=>pmdSaveDevice(),650);
 }
 function pmdSaveDevice(){
   clearTimeout(pmdDevice.timer);const generation=pmdDevice.generation;
   pmdDevice.chain=pmdDevice.chain.catch(()=>{}).then(async()=>{
-    if(!pmdDevice.enabled||generation!==pmdDevice.generation)return false;
+    if(!pmdDevice.enabled||pmdDevice.paused||generation!==pmdDevice.generation)return false;
     try{
       pmdDevice.state='Saving on this device…';pmdStorageStatus();
       const backup=pmdBackup();pmdBuildImport(backup);const revision=PMD_COMPANION.revision;
@@ -39,7 +55,7 @@ function pmdSaveDevice(){
         const tx=db.transaction(PMD_DEVICE_STORE,'readwrite'),store=tx.objectStore(PMD_DEVICE_STORE),get=store.get('active');let conflict=false;
         get.onsuccess=()=>{
           const current=get.result;
-          if((current?.revision||0)!==pmdDevice.revision){conflict=true;tx.abort();return;}
+          if(current&&!pmdDeviceEnvelope(current)||(current?.revision||0)!==pmdDevice.revision){conflict=true;tx.abort();return;}
           let previous=null;
           // Recovery must not promote a corrupt current slot into the fallback.
           for(const candidate of [current?.current,current?.previous]){if(!candidate)continue;try{pmdBuildImport(candidate);previous=candidate;break;}catch{}}
@@ -47,14 +63,14 @@ function pmdSaveDevice(){
         };
         tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error||Error('Unable to commit device save.'));tx.onabort=()=>reject(Error(conflict?'Another PMD window changed the saved program. Export this session, then reopen PMD.':'Device save was not committed.'));
       });
-      pmdDevice.revision++;pmdDevice.lastSaved=new Date();pmdDevice.state='Saved on this device';pmdDevice.savedRevision=revision;pmdStorageStatus();
+      pmdDevice.revision++;pmdDevice.lastSaved=new Date();pmdDevice.state=pmdDevice.paused?'Changed in another window — saving paused':'Saved on this device';pmdDevice.savedRevision=revision;pmdStorageStatus();pmdConnectDeviceChannel();pmdPublishDeviceRevision();
       if(PMD_COMPANION.revision!==revision)pmdScheduleSave();return true;
     }catch(e){pmdDeviceError(e);return false;}
   });return pmdDevice.chain;
 }
 function pmdOpenDevice(){
   const available=location.protocol!=='file:'&&!!window.indexedDB;
-  pmdSheet('Data mode & device storage','<div class="pc-status-card"><strong>'+esc(pmdDevice.enabled?'Trusted Device Mode':'Session Mode')+'</strong><p>'+esc(pmdDevice.enabled?pmdDevice.state:'No automatic program storage. Export before closing this tab or app.')+'</p></div><h3>Session Mode</h3><p>Your program stays in memory. Program Backup files are saved only when you request them.</p><h3>Trusted Device Mode</h3><p>Opt in only on a device and browser you trust. PMD saves this program in this browser’s IndexedDB, with one previous save for recovery. No account, server storage, or synchronization.</p><p>Anyone with access to this browser profile may access the program. PMD does not encrypt it. The browser or operating system can clear stored data; device storage is not a substitute for a separate backup.</p>'+(available?'':'<p class="pmd-note">Device saving requires the hosted app or localhost. Session Mode remains available from local files.</p>')+(pmdDevice.lastSaved?'<p>Last device save: '+esc(pmdDevice.lastSaved.toLocaleString())+'</p>':'')+(pmdDevice.recovery?'<p class="pmd-note">A saved program needs recovery. It has not replaced this session.</p><button class="btn pc-wide" data-recover-device>Review saved program recovery</button>':'')+'<button class="btn pc-wide" data-backup>Download Program Backup</button>',pmdDevice.enabled?'<button class="btn btn-danger" data-disable-device>Disable & clear device copy…</button>':available?'<button class="btn btn-primary" data-enable-device>Enable on this trusted device…</button>':'');
+  pmdSheet('Data mode & device storage','<div class="pc-status-card"><strong>'+esc(pmdDevice.enabled?'Trusted Device Mode':'Session Mode')+'</strong><p>'+esc(pmdDevice.enabled?pmdDevice.state:'No automatic program storage. Export before closing this tab or app.')+'</p></div><h3>Session Mode</h3><p>Your program stays in memory. Program Backup files are saved only when you request them.</p><h3>Trusted Device Mode</h3><p>Opt in only on a device and browser you trust. PMD saves this program in this browser’s IndexedDB, with one previous save for recovery. No account, server storage, or synchronization.</p><p>Anyone with access to this browser profile may access the program. Other applications on the same web origin may access its storage; a different URL path is not a security boundary. PMD does not encrypt it. The browser or operating system can clear stored data; device storage is not a substitute for a separate backup.</p>'+(available?'':'<p class="pmd-note">Device saving requires the hosted app or localhost. Session Mode remains available from local files.</p>')+(pmdDevice.lastSaved?'<p>Last device save: '+esc(pmdDevice.lastSaved.toLocaleString())+'</p>':'')+(pmdDevice.paused?'<p class="pmd-note">Automatic saving is paused to protect both versions. Download this session, then review the saved program before restoring.</p><button class="btn pc-wide" data-review-saved-device>Review latest saved program…</button>':'')+(pmdDevice.recovery?'<p class="pmd-note">A saved program needs recovery. It has not replaced this session.</p><button class="btn pc-wide" data-recover-device>Review saved program recovery</button>':'')+'<button class="btn pc-wide" data-backup>Download Program Backup</button>',pmdDevice.enabled?'<button class="btn btn-danger" data-disable-device>Disable & clear device copy…</button>':available?'<button class="btn btn-primary" data-enable-device>Enable on this trusted device…</button>':'');
 }
 async function pmdEnableDevice(){
   pmdSheet('Enable Trusted Device Mode','<p>PMD will automatically save the active program and one previous save in this browser. This is an explicit change from Session Mode.</p><label class="pc-check"><input type="checkbox" id="pcTrustConsent"> I trust this device and want it to retain this program.</label><p id="pcDeviceError" role="alert"></p>','<button class="btn" data-close-sheet>Cancel</button><button class="btn btn-primary" data-confirm-device>Enable device saving</button>');
@@ -64,7 +80,7 @@ async function pmdConfirmDevice(){
   try{
     const db=pmdDevice.db||(pmdDevice.db=await pmdOpenDB(true)),existing=await pmdReadDevice(db);
     if(existing){pmdDevice.recovery=existing;pmdRecoverDevice();return;}
-    pmdDevice.enabled=true;pmdDevice.generation++;const saved=await pmdSaveDevice();
+    pmdDevice.enabled=true;pmdDevice.paused=false;pmdDevice.generation++;const saved=await pmdSaveDevice();
     if(saved){navigator.storage?.persist?.().catch(()=>{});pmdOpenDevice();}else pmdOpenDevice();
   }catch(e){pmdDeviceError(e);}
 }
@@ -76,17 +92,17 @@ async function pmdClearDevice(){
   try{
     const db=pmdDevice.db||(pmdDevice.db=await pmdOpenDB(false));
     await new Promise((resolve,reject)=>{const tx=db.transaction(PMD_DEVICE_STORE,'readwrite');tx.objectStore(PMD_DEVICE_STORE).clear();tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});
-    pmdDevice.revision=0;pmdDevice.recovery=null;pmdDevice.lastSaved=null;pmdDevice.state='Session Mode';pmdStorageStatus();pmdOpenDevice();toast('Saved device program cleared. This session is still open.','success');
+    pmdDevice.revision=0;pmdDevice.recovery=null;pmdDevice.lastSaved=null;pmdDevice.paused=false;pmdDevice.state='Session Mode';pmdPublishDeviceRevision(true);pmdDevice.channel?.close();pmdDevice.channel=null;pmdStorageStatus();pmdOpenDevice();toast('Saved device program cleared. This session is still open.','success');
   }catch(e){pmdDevice.enabled=wasEnabled;pmdDeviceError(e);}
 }
 function pmdRecoverDevice(){
   const saved=pmdDevice.recovery;let current=null,previous=null;
-  try{if(saved?.format!==1)throw Error('Unknown device format');current=pmdBuildImport(saved.current);}catch{}
-  try{if(saved?.format!==1)throw Error('Unknown device format');previous=pmdBuildImport(saved.previous);}catch{}
+  try{if(!pmdDeviceEnvelope(saved))throw Error('Invalid device envelope');current=pmdBuildImport(saved.current);}catch{}
+  try{if(!pmdDeviceEnvelope(saved))throw Error('Invalid device envelope');previous=pmdBuildImport(saved.previous);}catch{}
   pmdSheet('Saved program recovery','<p>The saved program has not replaced your current session. Export this session before restoring if you need it.</p><p>'+ (current?'The current saved backup validates.': 'The current saved backup could not be validated.')+'</p><p>'+(previous?'A previous validated backup is available.':'No valid previous backup is available.')+'</p><p>Clearing removes both saved copies and keeps this session.</p>',(current?'<button class="btn btn-primary" data-restore-device="current">Restore saved program</button>':'')+(previous?'<button class="btn" data-restore-device="previous">Restore previous save</button>':'')+'<button class="btn btn-danger" data-disable-device>Clear device copy…</button>');
 }
 function pmdRestoreDevice(which){
-  try{const saved=pmdDevice.recovery,prepared=pmdBuildImport(saved[which]);pmdDevice.revision=saved.revision||0;pmdDevice.enabled=false;pmdCommitImport(prepared);pmdDevice.enabled=true;pmdDevice.generation++;pmdDevice.recovery=null;pmdDevice.lastSaved=new Date(saved.savedAt);pmdDevice.savedRevision=PMD_COMPANION.revision;pmdDevice.state=which==='previous'?'Previous save restored':'Saved on this device';pmdCloseSheet();pmdStorageStatus();if(which==='previous')pmdScheduleSave();}
+  try{const saved=pmdDevice.recovery;if(!pmdDeviceEnvelope(saved)||!['current','previous'].includes(which))throw Error('Invalid device envelope.');const prepared=pmdBuildImport(saved[which]);pmdDevice.enabled=false;if(!pmdCommitImport(prepared))throw Error('Restore could not be applied.');pmdDevice.revision=saved.revision;pmdDevice.enabled=true;pmdDevice.paused=false;pmdDevice.generation++;pmdDevice.recovery=null;pmdDevice.lastSaved=new Date(saved.savedAt);pmdDevice.savedRevision=PMD_COMPANION.revision;pmdDevice.state=which==='previous'?'Previous save restored':'Saved on this device';pmdConnectDeviceChannel();pmdCloseSheet();pmdStorageStatus();if(which==='previous')pmdScheduleSave();}
   catch(e){pmdDeviceError(e);}
 }
 async function pmdInitDevice(){
@@ -94,25 +110,28 @@ async function pmdInitDevice(){
   // Session Mode launch. Unsupported enumeration requires manual opt-in.
   if(location.protocol==='file:'||!window.indexedDB||!indexedDB.databases)return;
   try{
-    const databases=await indexedDB.databases();if(!databases.some(x=>x.name===PMD_DEVICE_DB))return;
-    const db=pmdDevice.db=await pmdOpenDB(false),saved=await pmdReadDevice(db);if(!saved)return;
-    if(saved.format!==1||!Number.isSafeInteger(saved.revision)){pmdDevice.recovery=saved;pmdRecoverDevice();return;}
+    const databases=await indexedDB.databases();if(pmdDevice.restoreCancelled||!databases.some(x=>x.name===PMD_DEVICE_DB))return;
+    const db=pmdDevice.db=await pmdOpenDB(false),saved=await pmdReadDevice(db);if(pmdDevice.restoreCancelled||!saved)return;
+    if(!pmdDeviceEnvelope(saved)){pmdDevice.recovery=saved;pmdRecoverDevice();return;}
     let prepared;try{prepared=pmdBuildImport(saved.current);}catch{pmdDevice.recovery=saved;pmdRecoverDevice();return;}
     // Automatic restore is allowed only by the previous explicit opt-in.
     if(pmdDevice.restoreCancelled)return;
-    pmdCommitImport(prepared);pmdDevice.enabled=true;pmdDevice.revision=saved.revision;pmdDevice.lastSaved=new Date(saved.savedAt);pmdDevice.savedRevision=PMD_COMPANION.revision;pmdDevice.state='Saved on this device';pmdStorageStatus();
+    if(!pmdCommitImport(prepared))throw Error('Restore could not be applied.');pmdDevice.enabled=true;pmdDevice.revision=saved.revision;pmdDevice.lastSaved=new Date(saved.savedAt);pmdDevice.savedRevision=PMD_COMPANION.revision;pmdDevice.state='Saved on this device';pmdConnectDeviceChannel();pmdStorageStatus();
   }catch(e){pmdDevice.state='Saved data could not be read';pmdStorageStatus();toast('Saved device data could not be opened. Session Mode is available. '+e.message,'error');}
 }
 async function pmdShareBackup(){
   try{const backup=pmdBackup();pmdBuildImport(backup);const file=new File([JSON.stringify(backup,null,2)],'PMD-Program-Backup-'+todayStr()+'.json',{type:'application/json'});
-    if(navigator.canShare?.({files:[file]})&&navigator.share){await navigator.share({files:[file],title:'PMD Program Backup'});toast('Backup sent to the selected share destination.','success');}
+    if(navigator.canShare?.({files:[file]})&&navigator.share){const revision=PMD_COMPANION.revision;await navigator.share({files:[file],title:'PMD Program Backup'});if(revision===PMD_COMPANION.revision)pmdBackupRequested();toast('Backup sent to the selected share destination. Verify that you retained the file.','success');}
     else exportAllData();
   }catch(e){if(e.name!=='AbortError')toast('Sharing unavailable. Use Download Program Backup.','error');}
 }
 document.addEventListener('click',e=>{
   const d=e.target.closest('button')?.dataset;if(!d)return;
   if('enableDevice'in d)pmdEnableDevice();if('confirmDevice'in d)pmdConfirmDevice();if('disableDevice'in d)pmdDisableDevice();if('confirmClearDevice'in d)pmdClearDevice();if('recoverDevice'in d)pmdRecoverDevice();if(d.restoreDevice)pmdRestoreDevice(d.restoreDevice);
+  if('reviewSavedDevice'in d)pmdReviewSavedDevice();
 });
+
+window.addEventListener('focus',async()=>{if(!pmdDevice.enabled||pmdDevice.paused||!pmdDevice.db)return;try{await pmdDevice.chain;const saved=await pmdReadDevice(pmdDevice.db);if(!saved||saved.revision!==pmdDevice.revision)pmdDeviceNotice(!saved);}catch{/* Keep memory intact; the next requested save reports the error. */}});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&pmdDevice.enabled)pmdSaveDevice();});
 window.addEventListener('pagehide',()=>{if(pmdDevice.enabled)pmdSaveDevice();});
 window.addEventListener('online',pmdStorageStatus);window.addEventListener('offline',pmdStorageStatus);

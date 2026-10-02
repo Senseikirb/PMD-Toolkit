@@ -8,7 +8,7 @@ The phone is a program companion. Desktop remains the full workstation. Both use
 - **Search:** title, identifier, owner, part number, vendor, notes and other record content across enabled modules. Results are limited to 40; refine the search to narrow them.
 - **New:** capture an action, risk, decision, milestone, anomaly, purchase or lesson. Only enabled modules appear. A title is required; other quick-capture fields are optional.
 - **Modules:** the enabled module list uses the configured names, groups and order.
-- **More:** backup, import, device storage, settings, undo/redo, theme and installation/update help.
+- **More:** Review work, Backup & recovery, import, device storage, settings, undo/redo, theme and installation/update help.
 
 ## Common work
 
@@ -18,7 +18,7 @@ Requirements, tests, inventory, BOM, changes, costs, EVM and trade studies also 
 
 Filters appear in a sheet: open/active, overdue, owner, status, priority/severity, structure and sort order. The choices come from the program's records and configured workflow meanings. Choosing an owner is the equivalent of “my items”; PMD has no login or assumed identity.
 
-Mobile lists show 40 records per page. Home prioritizes five items per section, with an explicit expanded queue. Full desktop view remains available in a module; More returns to the companion presentation.
+Mobile lists show 40 records per page. Home prioritizes five items per section, with a cross-module review queue that pages through all matching records. Full desktop view remains available in a module; More returns to the companion presentation.
 
 ## Install on an iPhone
 
@@ -30,3 +30,5 @@ Mobile lists show 40 records per page. Home prioritizes five items per section, 
 In Session Mode, closing or losing the app can discard work. Export a backup before leaving. Trusted Device Mode is optional and must be deliberately enabled.
 
 The interface uses safe-area padding, large primary touch targets, full-screen sheets, and the visual viewport for keyboard-aware controls. Physical iPhone installation, keyboard behavior and VoiceOver still require device testing; browser emulation does not establish those results.
+
+Quick forms and appended notes now ask before discarding unfinished input. Saved record changes retain the existing undo/audit behavior; unfinished forms are memory-only and must be saved. Review filters collapse on phones to keep records visible. See [Daily review and backup workflow](daily-review.md).

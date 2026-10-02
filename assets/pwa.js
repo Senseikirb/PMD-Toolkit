@@ -21,15 +21,23 @@ async function pmdCheckUpdate(){
 }
 async function pmdInitShell(){
   if(location.protocol==='file:'||!('serviceWorker'in navigator)){pmdStorageStatus();return;}
+  if(pmdShell.starting)return;pmdShell.starting=true;
   try{
-    const reg=pmdShell.registration=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
+    // An installed shell must remain discoverable on an offline launch even if
+    // register() would attempt a network update and reject in this browser.
+    const scope=new URL('./',location.href).href,script=new URL('./sw.js',location.href).href;
+    let reg=await navigator.serviceWorker.getRegistration(scope);
+    if(!reg||reg.scope!==scope||!(reg.active||reg.waiting||reg.installing)||[reg.active,reg.waiting,reg.installing].filter(Boolean).some(w=>w.scriptURL!==script))reg=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
+    else if(navigator.onLine)reg.update().catch(()=>{});
+    pmdShell.registration=reg;pmdShell.failed=false;
     if(reg.waiting)pmdOfferUpdate(reg.waiting);
     reg.addEventListener('updatefound',()=>{const worker=reg.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)pmdOfferUpdate(reg.waiting||worker);});});
     await navigator.serviceWorker.ready;pmdShell.ready=true;pmdStorageStatus();
     navigator.serviceWorker.addEventListener('controllerchange',()=>{if(pmdShell.applyRequested){_hasUnsavedChanges=false;location.reload();}});
     navigator.serviceWorker.addEventListener('message',event=>{if(event.data?.type==='PMD_UPDATE_BLOCKED'){pmdShell.applyRequested=false;const error=document.getElementById('pcUpdateError');if(error)error.textContent='Another PMD window is open. Close it and try again.';}});
-  }catch{pmdShell.failed=true;pmdStorageStatus();}
+  }catch{pmdShell.failed=true;pmdStorageStatus();}finally{pmdShell.starting=false;}
 }
+window.addEventListener('online',()=>{if(!pmdShell.registration)pmdInitShell();});
 pmdStorageStatus();pmdInitShell();
 // Block editing only while reading a previously opted-in program, preventing a
 // slow restore from overwriting input made during startup.
