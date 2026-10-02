@@ -1,12 +1,13 @@
 {
   "name": "pmd-toolkit",
-  "version": "10.1.0",
+  "version": "10.2.0",
   "private": true,
   "description": "No-build offline-capable PMD Toolkit; Node is development-only",
   "scripts": {
     "start": "node tools/serve.cjs",
-    "test": "node tests/static.cjs && node tests/legacy-regression.cjs && node tests/legacy-validation.cjs && node tests/companion.cjs && node tests/polish.cjs",
-    "handlers": "node tools/generate-handlers.cjs"
+    "test": "node tests/static.cjs && node tests/legacy-regression.cjs && node tests/legacy-validation.cjs && node tests/companion.cjs && node tests/polish.cjs && node tests/resilience.cjs",
+    "handlers": "node tools/generate-handlers.cjs",
+    "test:static": "node tests/static.cjs"
   },
   "devDependencies": {
     "acorn": "8.18.0",

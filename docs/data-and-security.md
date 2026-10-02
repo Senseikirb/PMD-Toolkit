@@ -4,21 +4,21 @@
 
 **Session Mode is the default.** Program records remain in memory. A fresh browser profile starts blank. There is no automatic program write to localStorage, sessionStorage or IndexedDB. The service worker may cache public application files so the app itself can open offline; those files contain no user program records.
 
-**Trusted Device Mode requires an explicit checkbox and confirmation.** It saves the active program in IndexedDB on this browser/device. The database name includes the application path, keeping deployments on different paths separate. This choice is not imported or exported as part of a program backup.
+**Trusted Device Mode requires an explicit checkbox and confirmation.** It saves the active program in IndexedDB on this browser/device. The database name includes the application path, avoiding accidental naming collisions between deployments. **This is not security isolation:** IndexedDB is origin-wide, and other applications on the same host/origin may access it. This choice is not imported or exported as part of a program backup.
 
 The current and one previous Program Backup are written in one database transaction. Saves are debounced after changes and also requested when the page becomes hidden. A visible state distinguishes pending changes, saving, saved and failed saves. Do not leave before “Saved on this device” appears. Mobile operating systems can suspend or terminate an app before a final write completes.
 
 Stored backups use the same schema validator as imported files. A corrupt current save offers a validated previous copy for recovery. Neither an invalid file nor invalid saved data partially replaces the active program. Quota/storage failures retain the in-memory program and prior committed save. Export immediately after a save error.
 
-Each saved transaction checks a revision. A second window cannot silently overwrite changes from another window. Conflicts require exporting the affected session and reopening PMD; there is no automatic merge.
+Each saved transaction checks a revision. A second window cannot silently overwrite changes from another window. Revision-only notices now pause stale saving in other windows. Export the affected session, then use **Review latest saved program** for deliberate recovery. The transaction check remains authoritative if notifications are unavailable. There is no automatic merge.
 
 **Disable & clear device copy** removes both saved copies and keeps the active in-memory session. It does not delete previously downloaded files, other browser profiles, other devices, or the public offline app shell.
 
 ## A separate backup is still essential
 
-Program Backup JSON contains settings, configuration, records, relationships, ID counters, retained audit history, saved filters and applicable session configuration. Undo/redo stacks are intentionally not restored from JSON. The schema remains `pmd.program-backup`, version `1`; PMD 10.0 backups remain compatible. Device storage uses its own version `1` envelope.
+Program Backup JSON contains settings, configuration, records, relationships, ID counters, retained audit history, saved filters and applicable session configuration. Undo/redo stacks are intentionally not restored from JSON. The schema remains `pmd.program-backup`, version `1`; Valid PMD 10.0/10.1 backups remain compatible. Device storage uses its own version `1` envelope.
 
-Import validates before asking to replace the active dataset. Keep the old backup until you have reviewed the result. Imports are undoable within the current session. Share Backup uses the native file share sheet when supported; otherwise it downloads an ordinary JSON file. A completed download request does not prove that you retained the file—verify important backups yourself.
+Import validates before asking to replace the active dataset. Keep the old backup until you have reviewed the result. Imports are undoable within the current session. Share Backup uses the native file share sheet when supported; otherwise it downloads an ordinary JSON file. A completed download request does not prove that you retained the file. **Backup & recovery** leaves the unsaved marker until you confirm retention; it also validates a chosen file and compares content without importing. Backup filenames omit the program name.
 
 Storage can be removed through browser settings, device cleanup, quota pressure, private browsing behavior, or OS decisions. Safari tabs and Home Screen apps may have separate storage. PMD requests persistent storage after opt-in when the browser supports it, but cannot guarantee the browser will grant or retain it.
 
@@ -37,3 +37,5 @@ These controls and automated attack fixtures reduce specific risks; they are not
 ## Browser-storage reference
 
 WebKit documents storage quotas, eviction and persistence heuristics in [Updates to Storage Policy](https://webkit.org/blog/14403/updates-to-storage-policy/). Treat device saving as a convenience and retain independent JSON backups.
+
+See the [threat model](threat-model.md), [daily review/backup guide](daily-review.md) and [security reporting guidance](../SECURITY.md).

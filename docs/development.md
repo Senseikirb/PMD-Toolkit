@@ -9,6 +9,8 @@ index.html                 application shell and retained workstation dialogs
 assets/app.js              completed V10 engine, configuration and workstation modules
 assets/app.css             dense desktop presentation
 assets/companion.js/.css   adaptive navigation, cards, quick edits and search
+assets/validation.js       pure JSON/nested-field/CSV/reference validation helpers
+assets/workspace.js        shared review, backup and quick-form protections
 assets/device.js           explicit device-storage lifecycle
 assets/pwa.js              offline/update interface
 assets/security.js        guarded HTML sinks and safe external event dispatch
@@ -17,14 +19,14 @@ manifest.webmanifest      relative start URL, scope and icons
 sw.js                     versioned application-shell cache
 ```
 
-The baseline was the completed PMD Toolkit V10.0 delivery, SHA-256 `495becc8f96bab1b37902ea05b676c0a6cd05875aa2711a18150c37dc9a6c33a`. V9.5 was not re-imported or rebuilt for this release. The desktop engine/configuration model and schema were preserved.
+The 10.2 baseline is merged 10.1 (`9f8ef51`). The original completed PMD Toolkit V10.0 delivery has SHA-256 `495becc8f96bab1b37902ea05b676c0a6cd05875aa2711a18150c37dc9a6c33a`. V9.5 was not re-imported or rebuilt for this release. The desktop engine/configuration model and schema were preserved.
 
 New code should use delegated events or function listeners rather than inline handler templates. If you change a retained template in `app.js`, run `npm run handlers` and commit `assets/handlers.js`. The development-only generator uses Acorn to translate known templates into functions; the browser does not compile strings into JavaScript.
 
 ## Run locally
 
 ```sh
-npm install
+npm ci --ignore-scripts
 npx playwright install chromium
 npm start
 ```
@@ -60,3 +62,9 @@ After reviewing and merging the PR, open **Settings → Pages → Build and depl
 The manifest, scripts, icons and worker use relative paths. `.nojekyll` keeps this a plain static deployment. No framework build or environment secrets are required. The implementation does not enable Pages or merge the PR automatically.
 
 GitHub's current instructions are in [Configuring a publishing source](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site). Background on shell caching is in [MDN's PWA caching guide](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Caching).
+
+## Continuous validation
+
+The read-only GitHub Actions workflow runs static and Chromium tests on PRs and main pushes. It regenerates handlers and rejects uncommitted generator differences. Action revisions and development dependencies are pinned. CI does not deploy, merge, handle real program files or use project secrets. Keep synthetic test output out of Git.
+
+`npm run test:static` is a quick syntax/packaging check. `npm test` also includes `tests/resilience.cjs` for malformed data, discard protection, backup acknowledgment/verification, cross-window recovery and a 10,000-record linked program. The latter validation has a 3-second regression guard on the test machine.

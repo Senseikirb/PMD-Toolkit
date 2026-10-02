@@ -6,6 +6,14 @@ A blank, configurable program-management and engineering execution toolkit. Brin
 
 ![Desktop workstation with clearly fictional data](docs/images/desktop-dashboard.png)
 
+## New in 10.2
+
+Review work across modules with owner filters and complete paginated queues. Protect unfinished quick edits, inspect import replacement counts, and check backups without replacing your program. Stronger validation, spreadsheet export safety, cross-window save warnings and faster relationship checks improve reliability. All major workstation modules remain available.
+
+Read the [product/engineering review](docs/product-review.md), [daily review guide](docs/daily-review.md), [threat model](docs/threat-model.md) and [executed tests](docs/validation.md).
+
+![Phone review with fictional records](docs/images/review-iphone.png)
+
 ## Start with your program
 
 PMD opens blank on a fresh installation. **Start Blank** requires no setup. Configure names, terminology, modules, dropdowns, workflow meanings, risk scales, currency and reporting as needed. General, software, hardware, integration and product presets configure the toolkit; they do not insert records.
@@ -35,7 +43,7 @@ You are responsible for deciding whether your organization's data is permitted o
 
 ## Open and install
 
-The intended project URL is **[senseikirb.github.io/PMD-Toolkit](https://senseikirb.github.io/PMD-Toolkit/)**, after the review branch is merged and GitHub Pages is enabled.
+The public app is **[senseikirb.github.io/PMD-Toolkit](https://senseikirb.github.io/PMD-Toolkit/)**. Pages currently publishes from `main`; a review branch is not deployed until it is merged.
 
 On iPhone, open the hosted app in Safari, use **Share → Add to Home Screen**, and open the icon once while connected until the status says **Offline ready**. Safari and installed apps may have separate storage. Import your backup in the app you intend to use.
 
@@ -54,13 +62,13 @@ Do not commit real program exports to this public repository.
 This is a no-build static site. After PR review and merge, configure **Settings → Pages → Deploy from a branch → main → / (root)**. No secrets or application environment variables are needed.
 
 ```sh
-npm install                  # development/test tools only
+npm ci --ignore-scripts       # development/test tools only
 npx playwright install chromium
 npm start                    # http://127.0.0.1:4173/PMD-Toolkit/
 npm test
 ```
 
-See [development and deployment](docs/development.md), [migration from V10.0](docs/migration.md), [test results](docs/validation.md), [known limitations](docs/limitations.md) and the [changelog](CHANGELOG.md).
+See [development and deployment](docs/development.md), [migration notes](docs/migration.md), [test results](docs/validation.md), [known limitations](docs/limitations.md) and the [changelog](CHANGELOG.md).
 
 Modern Chromium browsers are exercised by automation. Current Safari/iOS is an intended target; physical Add to Home Screen, VoiceOver, virtual keyboard, operating-system eviction and native share-sheet behavior remain device-verification items. No claim of exhaustive browser compatibility is made.
 
