@@ -5,7 +5,7 @@
   const inner=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
   const outer=Object.getOwnPropertyDescriptor(Element.prototype,'outerHTML');
   const insert=Element.prototype.insertAdjacentHTML;
-  const deny=new Set(['SCRIPT','IFRAME','OBJECT','EMBED','BASE','META','LINK','FOREIGNOBJECT','IMAGE','USE','AUDIO','VIDEO','SOURCE','TRACK']);
+  const deny=new Set(['SCRIPT','IFRAME','OBJECT','EMBED','BASE','META','LINK','FOREIGNOBJECT','IMAGE','USE','AUDIO','VIDEO','SOURCE','TRACK','TEMPLATE','MATH','ANIMATE','ANIMATEMOTION','ANIMATETRANSFORM','SET','MPATH']);
   const urlAttrs=new Set(['href','src','action','formaction','xlink:href','poster']);
   const handlers=window.PMD_HANDLERS||[];
   window.pmdSecurityRejectedCount=0;
@@ -25,7 +25,7 @@
       for(const attr of [...el.attributes]){
         const name=attr.name.toLowerCase();
         if(name.startsWith('data-pmd-event-')){
-          try{const [id,args]=JSON.parse(attr.value);if(!handlers[id]||!Array.isArray(args)||args.some(x=>x!==null&&typeof x!=='string'&&typeof x!=='number'&&typeof x!=='boolean'))throw Error();}catch{el.removeAttribute(attr.name);}continue;
+          try{const [id,args]=JSON.parse(attr.value);if(!Number.isSafeInteger(id)||!handlers[id]||handlers[id][0]!==name.slice(15)||!Array.isArray(args)||args.some(x=>x!==null&&typeof x!=='string'&&typeof x!=='number'&&typeof x!=='boolean'))throw Error();}catch{el.removeAttribute(attr.name);}continue;
         }
         if(name.startsWith('on')){
           el.removeAttribute(attr.name);const event=name.slice(2);
@@ -37,11 +37,11 @@
           }
           if(!accepted)window.pmdSecurityRejectedCount++;
         }else if(urlAttrs.has(name)&&!safeURL(attr.value,name))el.removeAttribute(attr.name);
-        else if(['srcdoc','http-equiv','srcset','imagesrcset','background'].includes(name))el.removeAttribute(attr.name);
+        else if(['srcdoc','http-equiv','srcset','imagesrcset','background','ping','attributionsrc'].includes(name))el.removeAttribute(attr.name);
         else if(name==='style'&&/(?:@import|url\s*\(|expression\s*\()/i.test(attr.value))el.removeAttribute(attr.name);
       }
       for(const [event,value]of pending)el.setAttribute('data-pmd-event-'+event,value);
-      if(el.tagName==='A'&&el.target==='_blank')el.rel='noopener noreferrer';
+      if(el.tagName==='A'){el.rel='noopener noreferrer';el.referrerPolicy='no-referrer';}
     }
   }
   function clean(markup){const template=document.createElement('template');inner.set.call(template,String(markup??''));transform(template.content);return inner.get.call(template);}
